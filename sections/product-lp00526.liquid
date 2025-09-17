@@ -1,0 +1,3497 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.metafields.custom.page_title | default: product.title }}</title>
+
+    <!-- Google Fonts -->
+    <link
+        href="{{ product.metafields.custom.google_fonts | default: 'https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap' }}"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="{{ product.metafields.custom.font_awesome_url | default: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' }}">
+
+    <!-- Tailwind CSS -->
+    <script src="{{ product.metafields.custom.tailwind_url | default: 'https://cdn.tailwindcss.com' }}"></script>
+    
+    <!-- Shopify Inline Editor -->
+    {{ 'shopify-inline-editor.js' | asset_url | script_tag }}
+
+    <style>
+        * {
+            font-family: '{{ product.metafields.custom.primary_font | default: ' Manrope' }}',
+            sans-serif;
+        }
+
+        .font-space {
+            font-family: '{{ product.metafields.custom.secondary_font | default: ' Space Grotesk' }}',
+            sans-serif;
+        }
+
+        /* Hero Section Grid Layout */
+        .hero-container {
+            display: grid;
+            gap: 2rem;
+        }
+
+        /* Desktop Layout - 2 columns */
+        @media (min-width: 1024px) {
+            .hero-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+                align-items: center;
+            }
+
+            .hero-badges {
+                grid-column: 1;
+            }
+
+            .hero-headline {
+                grid-column: 1;
+            }
+
+            .hero-subheadline {
+                grid-column: 1;
+            }
+
+            .hero-features {
+                grid-column: 1;
+            }
+
+            .hero-cta {
+                grid-column: 1;
+            }
+
+            .hero-social {
+                grid-column: 1;
+            }
+
+            /* Image spans full height in right column */
+            .hero-image {
+                grid-column: 2;
+                grid-row: 1 / span 7;
+                align-self: center;
+            }
+
+            /* Add glow effect on desktop */
+            .hero-image::before {
+                content: '';
+                position: absolute;
+                inset: -2rem;
+                background: radial-gradient(circle, rgba(16, 185, 129, 0.2), transparent);
+                filter: blur(3rem);
+                z-index: -1;
+            }
+        }
+
+        /* Mobile Layout - Single column with order */
+        @media (max-width: 1023px) {
+            .hero-container {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .hero-badges {
+                order: 1;
+            }
+
+            .hero-headline {
+                order: 2;
+            }
+
+            .hero-subheadline {
+                order: 3;
+            }
+
+            /* Image comes after subheadline on mobile */
+            .hero-image {
+                order: 4;
+                margin: 1rem 0;
+            }
+
+            .hero-features {
+                order: 5;
+            }
+
+            .hero-cta {
+                order: 6;
+            }
+
+            .hero-social {
+                order: 7;
+            }
+        }
+
+        /* Custom animations */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(34, 197, 94, 0.8);
+            }
+        }
+
+        .animate-slideDown {
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .glow-effect {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Reading progress */
+        .progress-smooth {
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, {
+                    {
+                    product.metafields.custom.gradient_color_start | default: '#059669'
+                }
+            }
+
+            0%, {
+                {
+                product.metafields.custom.gradient_color_end | default: '#10b981'
+            }
+        }
+
+        100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        }
+
+        /* Premium shadows */
+        .premium-shadow {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Notification animation */
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-120%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .notification-slide {
+            animation: slideInLeft 0.5s ease-out;
+        }
+
+        /* Enhanced mobile spacing */
+        @media (max-width: 640px) {
+            section {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            h1 {
+                line-height: 1.15 !important;
+            }
+
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+    </style>
+    <script>
+  window.ProductMetaFields = {
+    id: {{ product.id | json }},
+    handle: {{ product.handle | json }},
+    title: {{ product.title | json }},
+    metafields: {
+      {% for metafield in product.metafields %}
+        "{{ metafield.namespace }}.{{ metafield.key }}": {{ metafield.value | json }}{% unless forloop.last %},{% endunless %}
+      {% else %}
+        // No metafields available
+      {% endfor %}
+    }
+  };
+</script>
+</head>
+
+<body class="bg-slate-50">
+    <div id="support-root"></div>
+    
+    <!-- Reading Progress Bar -->
+    <div class="fixed top-0 left-0 w-full h-1 bg-slate-200 z-[100]">
+        <div id="progress-bar" class="h-full bg-gradient-to-r from-emerald-500 to-green-500 progress-smooth"
+            style="width: 0%"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="sticky top-1 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200">
+        <!-- Top Bar -->
+        <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white py-2.5">
+            <div class="container mx-auto px-4">
+                <div class="flex items-center justify-center gap-3 text-sm sm:text-base">
+                    <span class="flex items-center gap-2">
+                        <i class="fas fa-tag text-emerald-400"></i>
+                        <span class="font-medium">{{ product.metafields.custom.top_bar_text | default: 'FLASH SALE: Save
+                            $169 + Free Shipping' }}</span>
+                    </span>
+                    <span class="hidden sm:flex items-center gap-2 text-emerald-400">
+                        <i class="fas fa-clock"></i>
+                        <span id="countdown-timer">{{ product.metafields.custom.countdown_initial | default: '08:42:15'
+                            }}</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center">
+                        <span class="font-space font-bold text-2xl sm:text-3xl text-slate-900">{{
+                            product.metafields.custom.logo_text_start | default: 'Trail' }}</span>
+                        <span class="font-space font-bold text-2xl sm:text-3xl gradient-text">{{
+                            product.metafields.custom.logo_text_end | default: 'Vision' }}</span>
+                    </div>
+                    <span class="inline-block bg-emerald-500 text-white text-xs font-bold px-2.5 py-1 rounded">{{
+                        product.metafields.custom.product_version | default: 'PRO X50' }}</span>
+                </div>
+
+                <!-- Desktop Nav -->
+                <div class="hidden lg:flex items-center gap-8">
+                    <a href="#technology" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">
+                        {{ product.metafields.custom.nav_item_1 | default: 'Technology' }}
+                    </a>
+                    <a href="#features" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">
+                        {{ product.metafields.custom.nav_item_2 | default: 'Features' }}
+                    </a>
+                    <a href="#gallery" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">
+                        {{ product.metafields.custom.nav_item_3 | default: 'Gallery' }}
+                    </a>
+                    <a href="#reviews" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">
+                        {{ product.metafields.custom.nav_item_4 | default: 'Reviews' }}
+                    </a>
+                    <a href="#packages"
+                        class="bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold px-6 py-2.5 rounded-full hover:shadow-lg transition-all transform hover:scale-105">
+                        {{ product.metafields.custom.nav_cta_text | default: 'Get 50% OFF' }}
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="menu-toggle" class="lg:hidden p-2">
+                    <i class="fas fa-bars text-2xl text-slate-700"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-nav" style="display: none;" class="lg:hidden pb-4 border-t border-slate-200 mt-2 pt-4">
+                <div class="flex flex-col gap-3">
+                    <a href="#technology" class="text-slate-600 font-medium py-2">{{
+                        product.metafields.custom.nav_item_1 | default: 'Technology' }}</a>
+                    <a href="#features" class="text-slate-600 font-medium py-2">{{ product.metafields.custom.nav_item_2
+                        | default: 'Features' }}</a>
+                    <a href="#gallery" class="text-slate-600 font-medium py-2">{{ product.metafields.custom.nav_item_3 |
+                        default: 'Gallery' }}</a>
+                    <a href="#reviews" class="text-slate-600 font-medium py-2">{{ product.metafields.custom.nav_item_4 |
+                        default: 'Reviews' }}</a>
+                    <a href="#packages" class="bg-emerald-600 text-white font-semibold text-center py-3 rounded-full">
+                        {{ product.metafields.custom.mobile_nav_cta_text | default: 'Get 50% OFF Now' }}
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section
+        class="min-h-screen flex items-center relative overflow-hidden bg-gradient-to-b from-white via-emerald-50/20 to-white py-12 lg:py-16">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-0 left-0 w-96 h-96 bg-emerald-500 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-green-500 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <!-- Main Grid Container - All elements in single container -->
+            <div class="hero-container">
+                <!-- 1. Badges -->
+                <div class="hero-badges animate-fadeInUp">
+                    <div class="inline-flex items-center gap-3">
+                        <div
+                            class="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-full shadow-sm">
+                            <div class="flex -space-x-2">
+                                <span class="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
+                                <span class="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
+                                <span class="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
+                            </div>
+                            <span class="text-sm font-medium text-slate-700">{{
+                                product.metafields.custom.active_users_count | default: '2,847' }} Active Users</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Headline -->
+                <h1
+                    class="hero-headline font-space font-bold text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-slate-900 leading-[1.1] animate-fadeInUp">
+                    <span>{{ product.metafields.custom.hero_title | default: 'Revolutionary TrailVision Pro X50' }}</span>
+                </h1>
+
+                <!-- 3. Subheadline -->
+                <p
+                    class="hero-subheadline text-lg sm:text-xl lg:text-2xl text-slate-600 leading-relaxed animate-fadeInUp">
+                    <span>{{ product.metafields.custom.hero_subtitle | default: 'Revolutionary 4G LTE technology delivers HD
+                    photos in 30 seconds. No WiFi needed. No SD cards. Just real-time wildlife intelligence.' }}</span>
+                </p>
+
+                <!-- 4. Single Hero Image -->
+                <div class="hero-image animate-fadeInUp">
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl">
+                        <img 
+                            src="{{ product.metafields.custom.hero_image | img_url: 'master' }}"
+                            alt="{{ product.metafields.custom.hero_image_alt | default: product.title }}"
+                            class="w-full h-auto object-cover">
+
+                        <!-- Floating Badges -->
+                        <div
+                            class="absolute top-4 sm:top-6 left-4 sm:left-6 bg-black/80 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-sm font-medium backdrop-blur-sm">
+                            <i class="fas fa-award text-yellow-400 mr-1.5"></i>
+                            <span class="hidden sm:inline">{{ product.metafields.custom.hero_badge_text | default: '#1
+                                Rated Trail Camera' }}</span>
+                            <span class="sm:hidden">{{ product.metafields.custom.hero_badge_text_mobile | default: '#1
+                                Rated' }}</span>
+                        </div>
+
+                        <!-- Feature Callout -->
+                        <div class="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-auto">
+                            <div
+                                class="bg-white/95 backdrop-blur-md rounded-xl p-3 sm:p-4 shadow-xl flex items-center gap-3 max-w-xs">
+                                <div
+                                    class="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i
+                                        class="fas fa-{{ product.metafields.custom.hero_callout_icon | default: 'signal' }} text-emerald-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-900 text-sm sm:text-base">{{
+                                        product.metafields.custom.hero_callout_title | default: '4G LTE Connected' }}
+                                    </p>
+                                    <p class="text-xs sm:text-sm text-slate-600">{{
+                                        product.metafields.custom.hero_callout_subtitle | default: 'Works everywhere' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Features Grid -->
+                <div class="hero-features grid grid-cols-2 sm:grid-cols-4 gap-4 animate-fadeInUp">
+                    <div class="flex flex-col items-center text-center space-y-2">
+                        <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                            <i
+                                class="fas fa-{{ product.metafields.custom.feature_1_icon | default: 'wifi' }} text-emerald-600 text-lg"></i>
+                        </div>
+                        <span class="text-sm font-medium text-slate-700">{{ product.metafields.custom.feature_1_text |
+                            default: 'No WiFi' }}</span>
+                    </div>
+                    <div class="flex flex-col items-center text-center space-y-2">
+                        <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                            <i
+                                class="fas fa-{{ product.metafields.custom.feature_2_icon | default: 'bolt' }} text-emerald-600 text-lg"></i>
+                        </div>
+                        <span class="text-sm font-medium text-slate-700">{{ product.metafields.custom.feature_2_text |
+                            default: '30 Sec' }}</span>
+                    </div>
+                    <div class="flex flex-col items-center text-center space-y-2">
+                        <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                            <i
+                                class="fas fa-{{ product.metafields.custom.feature_3_icon | default: 'moon' }} text-emerald-600 text-lg"></i>
+                        </div>
+                        <span class="text-sm font-medium text-slate-700">{{ product.metafields.custom.feature_3_text |
+                            default: 'Night Vision' }}</span>
+                    </div>
+                    <div class="flex flex-col items-center text-center space-y-2">
+                        <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                            <i
+                                class="fas fa-{{ product.metafields.custom.feature_4_icon | default: 'video' }} text-emerald-600 text-lg"></i>
+                        </div>
+                        <span class="text-sm font-medium text-slate-700">{{ product.metafields.custom.feature_4_text |
+                            default: '4K Video' }}</span>
+                    </div>
+                </div>
+
+                <!-- 6. Price & CTA -->
+                <div class="hero-cta space-y-6 animate-fadeInUp">
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#packages"
+                            class="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold text-center py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
+                            <i class="fas fa-shopping-cart mr-2"></i>
+                            {{ product.metafields.custom.hero_cta_primary_text | default: 'Get TrailVision Now' }}
+                        </a>
+                        <button onclick="playDemo()"
+                            class="sm:flex-1 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-center py-4 px-6 rounded-xl border-2 border-slate-200 transition-colors">
+                            <i class="fas fa-circle-info text-emerald-600 mr-2"></i>
+                            {{ product.metafields.custom.hero_cta_secondary_text | default: 'Learn More' }}
+                        </button>
+                    </div>
+
+                    <!-- Trust Elements -->
+                    <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-600">
+                        <span class="flex items-center gap-1.5">
+                            <i class="fas fa-shield-alt text-emerald-600"></i>
+                            {{ product.metafields.custom.trust_element_1 | default: '90-Day Guarantee' }}
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <i class="fas fa-truck text-emerald-600"></i>
+                            {{ product.metafields.custom.trust_element_2 | default: 'Free Shipping' }}
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <i class="fas fa-lock text-emerald-600"></i>
+                            {{ product.metafields.custom.trust_element_3 | default: 'Secure Checkout' }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 7. Social Proof -->
+                <div
+                    class="hero-social flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-6 border-t border-slate-200 animate-fadeInUp">
+                    <div class="flex">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-slate-900">{{ product.metafields.custom.rating | default: '4.9/5'
+                            }}</span>
+                        <span class="text-sm text-slate-600 ml-1">from {{ product.metafields.custom.review_count |
+                            default: '2,847' }} verified buyers</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="flex justify-center mt-12 lg:mt-16 animate-bounce">
+                <button onclick="scrollToNext()"
+                    class="text-center text-slate-400 hover:text-emerald-600 transition-colors">
+                    <p class="text-sm font-medium mb-2">{{ product.metafields.custom.scroll_indicator_text | default:
+                        'Explore Features' }}</p>
+                    <i class="fas fa-chevron-down text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section id="technology" class="py-20 lg:py-28 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+            <!-- Header -->
+            <div class="text-center mb-14 lg:mb-16">
+                <span
+                    class="inline-block bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-semibold mb-5">
+                    {{ product.metafields.custom.tech_section_label | default: 'CUTTING-EDGE TECHNOLOGY' }}
+                </span>
+                <h2 class="font-space font-bold text-3xl sm:text-4xl lg:text-5xl text-slate-900 mb-6">
+                    {{ product.metafields.custom.tech_title_part_1 | default: 'Finally, A Trail Camera That'}}
+                    <span class="gradient-text">{{ product.metafields.custom.tech_title_part_2 | default: 'Actually
+                        Smart' }}</span>
+                </h2>
+                <p class="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto">
+                    {{ product.metafields.custom.tech_subtitle | default: 'Advanced features that put you in control
+                    from anywhere in the world' }}
+                </p>
+            </div>
+
+            <!-- Tech Features - 2x2 Grid -->
+            <div class="grid md:grid-cols-2 gap-8 lg:gap-10">
+                <!-- Feature 1 -->
+                <div class="group">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                            <i
+                                class="fas fa-{{ product.metafields.custom.tech_feature_1_icon | default: 'satellite-dish' }} text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-xl text-slate-900 mb-2">{{
+                                product.metafields.custom.tech_feature_1_title | default: '4G LTE Connectivity' }}</h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                {{ product.metafields.custom.tech_feature_1_description | default: 'Built-in cellular
+                                modem works with AT&T, Verizon & T-Mobile. No WiFi or bluetooth needed.' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="group">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                            <i
+                                class="fas fa-{{ product.metafields.custom.tech_feature_2_icon | default: 'brain' }} text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-xl text-slate-900 mb-2">{{
+                                product.metafields.custom.tech_feature_2_title | default: 'AI Wildlife Detection' }}
+                            </h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                {{ product.metafields.custom.tech_feature_2_description | default: 'Smart AI identifies
+                                animals and filters out false triggers from wind or branches.' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="group">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                            <i
+                                class="fas fa-{{ product.metafields.custom.tech_feature_3_icon | default: 'moon' }} text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-xl text-slate-900 mb-2">{{
+                                product.metafields.custom.tech_feature_3_title | default: 'Invisible Night Vision' }}
+                            </h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                {{ product.metafields.custom.tech_feature_3_description | default: '940nm no-glow LEDs
+                                capture crystal clear footage in complete darkness up to 100ft.' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="group">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                            <i
+                                class="fas fa-{{ product.metafields.custom.tech_feature_4_icon | default: 'mobile-alt' }} text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-xl text-slate-900 mb-2">{{
+                                product.metafields.custom.tech_feature_4_title | default: 'Smart App Control' }}</h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                {{ product.metafields.custom.tech_feature_4_description | default: 'View photos, change
+                                settings, and manage multiple cameras from your phone instantly.' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div
+                class="mt-14 lg:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-8 border border-emerald-200">
+                <div class="text-center">
+                    <p class="text-3xl lg:text-4xl font-bold text-slate-900">{{ product.metafields.custom.stat_1_value |
+                        default: '30s' }}</p>
+                    <p class="text-sm text-slate-600 mt-1">{{ product.metafields.custom.stat_1_label | default: 'Photo
+                        Delivery' }}</p>
+                </div>
+                <div class="text-center border-t sm:border-t-0 sm:border-l sm:border-r border-emerald-200 pt-6 sm:pt-0">
+                    <p class="text-3xl lg:text-4xl font-bold text-slate-900">{{ product.metafields.custom.stat_2_value |
+                        default: '24MP' }}</p>
+                    <p class="text-sm text-slate-600 mt-1">{{ product.metafields.custom.stat_2_label | default: 'HD
+                        Photos' }}</p>
+                </div>
+                <div class="text-center border-t sm:border-t-0 border-emerald-200 pt-6 sm:pt-0">
+                    <p class="text-3xl lg:text-4xl font-bold text-slate-900">{{ product.metafields.custom.stat_3_value |
+                        default: '6mo' }}</p>
+                    <p class="text-sm text-slate-600 mt-1">{{ product.metafields.custom.stat_3_label | default: 'Battery
+                        Life' }}</p>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="text-center mt-12">
+                <a href="#packages"
+                    class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold px-10 py-4 rounded-xl hover:shadow-xl transition-all transform hover:scale-105">
+                    <span>{{ product.metafields.custom.tech_cta_text | default: 'Get Your TrailVision Pro X50' }}</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <p class="text-sm text-slate-600 mt-4">
+                    <i class="fas fa-shield-alt text-emerald-600 mr-1"></i>
+                    {{ product.metafields.custom.tech_cta_subtext | default: '90-Day Money Back Guarantee' }}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sticky CTA Button (Embedded in HTML, hidden by default) -->
+    <div id="sticky-cta" class="fixed bottom-6 right-6 z-40" style="display: none;">
+        <a href="#packages"
+            class="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold px-5 py-3 rounded-full shadow-2xl hover:scale-105 transition-transform">
+            <i class="fas fa-bolt"></i>
+            <span class="hidden sm:inline">50% OFF</span>
+            <span class="sm:hidden">Buy Now</span>
+        </a>
+    </div>
+
+    <!-- Purchase Notifications (All embedded in HTML) -->
+    <div id="notification-1"
+        class="fixed bottom-6 left-6 bg-white rounded-xl shadow-2xl border border-slate-200 p-4 z-50 max-w-xs notification-slide"
+        style="display: none;">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <i class="fas fa-check text-emerald-600"></i>
+            </div>
+            <div>
+                <p class="font-semibold text-slate-900">Mark from Texas</p>
+                <p class="text-sm text-slate-600">Just purchased TrailVision Pro X50</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-2"
+        class="fixed bottom-6 left-6 bg-white rounded-xl shadow-2xl border border-slate-200 p-4 z-50 max-w-xs notification-slide"
+        style="display: none;">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <i class="fas fa-check text-emerald-600"></i>
+            </div>
+            <div>
+                <p class="font-semibold text-slate-900">Sarah from California</p>
+                <p class="text-sm text-slate-600">Just purchased TrailVision Pro X50</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-3"
+        class="fixed bottom-6 left-6 bg-white rounded-xl shadow-2xl border border-slate-200 p-4 z-50 max-w-xs notification-slide"
+        style="display: none;">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <i class="fas fa-check text-emerald-600"></i>
+            </div>
+            <div>
+                <p class="font-semibold text-slate-900">Mike from Colorado</p>
+                <p class="text-sm text-slate-600">Just purchased TrailVision Pro X50</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-4"
+        class="fixed bottom-6 left-6 bg-white rounded-xl shadow-2xl border border-slate-200 p-4 z-50 max-w-xs notification-slide"
+        style="display: none;">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <i class="fas fa-check text-emerald-600"></i>
+            </div>
+            <div>
+                <p class="font-semibold text-slate-900">Emily from Wyoming</p>
+                <p class="text-sm text-slate-600">Just purchased TrailVision Pro X50</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-5"
+        class="fixed bottom-6 left-6 bg-white rounded-xl shadow-2xl border border-slate-200 p-4 z-50 max-w-xs notification-slide"
+        style="display: none;">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <i class="fas fa-check text-emerald-600"></i>
+            </div>
+            <div>
+                <p class="font-semibold text-slate-900">David from Montana</p>
+                <p class="text-sm text-slate-600">Just purchased TrailVision Pro X50</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exit Intent Popup (All content embedded in HTML) -->
+    <div id="popup-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] items-center justify-center p-4"
+        style="display: none;">
+        <div class="bg-white rounded-2xl max-w-md w-full relative premium-shadow">
+            <button id="popup-close-btn"
+                class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+
+            <!-- Step 1: Initial Offer -->
+            <div id="popup-step-1" class="p-8" style="display: block;">
+                <div class="text-center">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-percent text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-space font-bold text-2xl text-slate-900 mb-3">Wait! Extra 15% OFF</h3>
+                    <p class="text-slate-600 mb-6">
+                        You qualify for our exclusive discount! Get an additional 15% OFF on top of the 50% sale. This
+                        offer
+                        expires in 10 minutes.
+                    </p>
+                    <button onclick="goToStep2()"
+                        class="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold py-3 rounded-xl hover:shadow-lg transition-all">
+                        Yes, I Want Extra Savings
+                    </button>
+                    <button onclick="closePopup()"
+                        class="mt-3 text-sm text-slate-500 hover:text-slate-700 transition-colors">
+                        No thanks, I'll pay more
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Email Collection -->
+            <div id="popup-step-2" class="p-8" style="display: none;">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-envelope text-emerald-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-space font-bold text-2xl text-slate-900 mb-3">Almost Done!</h3>
+                    <p class="text-slate-600 mb-6">Enter your email to instantly receive your exclusive discount code
+                    </p>
+                    <input type="email" id="email-input" placeholder="your@email.com"
+                        class="w-full px-4 py-3 border border-slate-300 rounded-lg mb-4 focus:outline-none focus:border-emerald-500 transition-colors">
+                    <button onclick="goToStep3()"
+                        class="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold py-3 rounded-xl hover:shadow-lg transition-all">
+                        Get My Discount Code
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Code Display -->
+            <div id="popup-step-3" class="p-8" style="display: none;">
+                <div class="text-center">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-check text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-space font-bold text-2xl text-slate-900 mb-3">Your Code is Ready!</h3>
+                    <p class="text-slate-600 mb-4">Congratulations! Your exclusive discount has been activated.</p>
+                    <div onclick="copyCode()"
+                        class="bg-gradient-to-r from-emerald-50 to-green-50 border-2 border-emerald-200 rounded-xl p-6 mb-6 cursor-pointer hover:border-emerald-300 transition-all group">
+                        <p class="font-bold text-4xl text-emerald-600 mb-2">B5C6</p>
+                        <p class="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
+                            <i class="fas fa-copy mr-1"></i>
+                            Click to copy • Extra 15% OFF your order
+                        </p>
+                    </div>
+                    <button onclick="shopWithDiscount()"
+                        class="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold py-3 rounded-xl hover:shadow-lg transition-all">
+                        Apply Discount & Shop Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Notification (Embedded) -->
+    <div id="review-notification"
+        class="fixed bottom-6 left-6 bg-white rounded-xl shadow-2xl border border-slate-200 p-4 z-50 max-w-sm"
+        style="display: none;">
+        <div class="flex items-start gap-3">
+            <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-star text-yellow-500"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-1 mb-1">
+                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                </div>
+                <p class="text-sm text-slate-600 italic">"Best trail camera I've ever owned! Crystal clear photos."</p>
+                <p class="text-xs text-slate-500 mt-1">- Verified Buyer</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function () {
+            const mobileNav = document.getElementById('mobile-nav');
+            if (mobileNav.style.display === 'none' || mobileNav.style.display === '') {
+                mobileNav.style.display = 'block';
+            } else {
+                mobileNav.style.display = 'none';
+            }
+        });
+
+        // Reading progress bar
+        window.addEventListener('scroll', function () {
+            const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('progress-bar').style.width = scrolled + '%';
+
+            // Show sticky CTA after 50% scroll
+            const stickyCta = document.getElementById('sticky-cta');
+            if (scrolled > 50) {
+                stickyCta.style.display = 'block';
+            } else {
+                stickyCta.style.display = 'none';
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Scroll to next section
+        function scrollToNext() {
+            const nextSection = document.getElementById('technology');
+            if (nextSection) {
+                nextSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Purchase notifications rotation
+        let currentNotification = 1;
+        const totalNotifications = 5;
+
+        function showNotification() {
+            // Hide all notifications first
+            for (let i = 1; i <= totalNotifications; i++) {
+                document.getElementById('notification-' + i).style.display = 'none';
+            }
+
+            // Show current notification
+            const notification = document.getElementById('notification-' + currentNotification);
+            notification.style.display = 'block';
+
+            // Hide after 5 seconds
+            setTimeout(function () {
+                notification.style.display = 'none';
+            }, 5000);
+
+            // Move to next notification
+            currentNotification = (currentNotification % totalNotifications) + 1;
+        }
+
+        // Start notifications after 30 seconds
+        setTimeout(function () {
+            showNotification();
+            // Then show every 60-90 seconds
+            setInterval(showNotification, 60000 + Math.random() * 30000);
+        }, 30000);
+
+        // Review notification
+        setTimeout(function () {
+            const reviewNotification = document.getElementById('review-notification');
+            reviewNotification.style.display = 'block';
+            setTimeout(function () {
+                reviewNotification.style.display = 'none';
+            }, 6000);
+        }, 45000);
+
+        // Exit intent popup
+        let popupShown = false;
+        let timeOnPage = 0;
+        let scrollDepth = 0;
+
+        // Track time on page
+        setInterval(function () {
+            timeOnPage++;
+        }, 1000);
+
+        // Track scroll depth
+        window.addEventListener('scroll', function () {
+            const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            scrollDepth = Math.max(scrollDepth, scrolled);
+        });
+
+        // Exit intent detection
+        document.addEventListener('mouseleave', function (e) {
+            // Check all conditions: exit intent, time > 30s, scroll > 40%
+            if (e.clientY <= 0 && !popupShown && timeOnPage >= 30 && scrollDepth >= 40) {
+                const popup = document.getElementById('popup-overlay');
+                popup.style.display = 'flex';
+                popupShown = true;
+            }
+        });
+
+        // Mobile back button detection
+        window.addEventListener('popstate', function (e) {
+            if (!popupShown && timeOnPage >= 30 && scrollDepth >= 40) {
+                e.preventDefault();
+                const popup = document.getElementById('popup-overlay');
+                popup.style.display = 'flex';
+                popupShown = true;
+                // Push state again to keep user on page
+                history.pushState(null, null, window.location.href);
+            }
+        });
+
+        // Popup functions
+        function closePopup() {
+            document.getElementById('popup-overlay').style.display = 'none';
+        }
+
+        function goToStep2() {
+            document.getElementById('popup-step-1').style.display = 'none';
+            document.getElementById('popup-step-2').style.display = 'block';
+        }
+
+        function goToStep3() {
+            const email = document.getElementById('email-input').value;
+            if (email && email.includes('@')) {
+                document.getElementById('popup-step-2').style.display = 'none';
+                document.getElementById('popup-step-3').style.display = 'block';
+            } else {
+                alert('Please enter a valid email address');
+            }
+        }
+
+        function copyCode() {
+            navigator.clipboard.writeText('B5C6').then(function () {
+                // Visual feedback
+                const codeDiv = event.currentTarget;
+                const originalHTML = codeDiv.innerHTML;
+                codeDiv.innerHTML =
+                    '<p class="font-bold text-2xl text-green-600 mb-2"><i class="fas fa-check mr-2"></i>Copied!</p><p class="text-sm text-slate-600">Code saved to clipboard</p>';
+                setTimeout(function () {
+                    codeDiv.innerHTML = originalHTML;
+                }, 2000);
+            });
+        }
+
+        function shopWithDiscount() {
+            closePopup();
+            // Scroll to packages section
+            const packagesSection = document.getElementById('packages');
+            if (packagesSection) {
+                packagesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Play demo function
+        function playDemo() {
+            alert('Demo video would play here');
+        }
+
+        document.getElementById('popup-close-btn').addEventListener('click', function () {
+            document.getElementById('popup-overlay').style.display = 'none';
+        });
+
+        // Close popup on background click
+        document.getElementById('popup-overlay').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
+    </script>
+    <!-- Phase 2: Product Gallery, How It Works, Performance Features -->
+
+    <style>
+        /* Font styles */
+        .font-space {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Gallery Slider Styles */
+        .gallery-slider {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            touch-action: pan-y;
+        }
+
+        .gallery-slide {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .gallery-dot {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-dot:hover {
+            transform: scale(1.2);
+        }
+
+        /* Touch-friendly button sizing */
+        @media (max-width: 768px) {
+            button[onclick*='changeSlide'] {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* Feature section image overlays */
+        .feature-badge {
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Touch manipulation for mobile */
+        .touch-manipulation {
+            touch-action: manipulation;
+        }
+    </style>
+
+    <!-- Product Gallery Section -->
+    <section id="gallery" class="py-20 lg:py-28 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+            <!-- Section Header -->
+            <div class="text-center mb-12 lg:mb-16">
+                <span
+                    class="inline-block bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-semibold mb-5">
+                    {{ product.metafields.custom.gallery_section_label | default: 'PRODUCT SHOWCASE' }}
+                </span>
+                <h2 class="font-space font-bold text-3xl sm:text-4xl lg:text-5xl text-slate-900 mb-6">
+                    {{ product.metafields.custom.gallery_title_part_1 | default: 'Engineered For' }}
+                    <span class="gradient-text">{{ product.metafields.custom.gallery_title_part_2 | default: 'Extreme
+                        Performance' }}</span>
+                </h2>
+                <p class="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto">
+                    {{ product.metafields.custom.gallery_subtitle | default: 'Military-grade construction meets
+                    cutting-edge technology' }}
+                </p>
+            </div>
+
+            <!-- Gallery Container -->
+            <div class="grid lg:grid-cols-5 gap-6 lg:gap-8">
+                <!-- Main Gallery Slider - 60% width on desktop -->
+                <div class="lg:col-span-3">
+                    <div class="relative">
+                        <!-- Gallery Slider Container -->
+                        <div class="relative rounded-2xl overflow-hidden aspect-square shadow-2xl">
+                            <!-- Overlay gradient for enhanced visual -->
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none z-10">
+                            </div>
+
+                            <!-- Gallery Images Container -->
+                            <div class="gallery-slider relative w-full h-full" id="gallery-slider">
+                                <!-- Gallery Images with Metafields -->
+                               {% for i in (1..7) %}
+  {% assign gallery_image_key = 'gallery_image_' | append: i %}
+  {% assign gallery_alt_key = 'gallery_image_' | append: i | append: '_alt' %}
+  {% assign highlight_icon_key = 'highlight_' | append: i | append: '_icon' %}
+
+  {% assign gallery_image = product.metafields.custom[gallery_image_key] %}
+  {% assign image_alt = product.metafields.custom[gallery_alt_key] | default: product.title | append: ' - Image ' | append: i %}
+  {% assign highlight_icon = product.metafields.custom[highlight_icon_key] | default: 'microchip' %}
+
+  <div class="gallery-slide absolute inset-0" data-slide="{{ i }}"
+       style="display: {% if i == 1 %}block{% else %}none{% endif %};">
+    <img src="{% if gallery_image %}{{ gallery_image | img_url: 'master' }}{% else %}{{ product.featured_image | img_url: 'master' }}{% endif %}"
+         alt="{{ image_alt }}"
+         class="w-full h-full object-cover">
+  </div>
+{% endfor %}
+
+                            </div>
+
+                            <!-- Previous/Next Arrow Navigation -->
+                            <button onclick="changeSlide(-1)"
+                                class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all z-20 touch-manipulation">
+                                <i class="fas fa-chevron-left text-slate-600"></i>
+                            </button>
+                            <button onclick="changeSlide(1)"
+                                class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all z-20 touch-manipulation">
+                                <i class="fas fa-chevron-right text-slate-600"></i>
+                            </button>
+                        </div>
+
+                        <!-- Dot Navigation -->
+                        <div class="flex justify-center gap-2 mt-6">
+                            {% for i in (1..7) %}
+                            <button onclick="goToSlide({{ i }})"
+                                class="gallery-dot w-3 h-3 rounded-full {% if i == 1 %}bg-emerald-500{% else %}bg-slate-300 hover:bg-slate-400{% endif %} transition-all"></button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mini Product Card - 40% width on desktop -->
+                <div class="lg:col-span-2">
+                    <div
+                        class="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-6 lg:p-8 border border-slate-200 shadow-xl">
+                        <!-- Product Name & Rating -->
+                        <div class="mb-6">
+                            <h3 class="font-space font-bold text-2xl text-slate-900 mb-3">{{
+                                product.metafields.custom.product_name | default: product.title }}</h3>
+                            <div class="flex items-center gap-3">
+                                <div class="flex">
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                </div>
+                                <span class="text-sm text-slate-600">{{ product.metafields.custom.rating | default:
+                                    '4.9/5' }} ({{ product.metafields.custom.review_count | default: '2,847' }})</span>
+                            </div>
+                        </div>
+
+                        <!-- Key Specs -->
+                        <div class="space-y-4 mb-6">
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-700">{{ product.metafields.custom.spec_1_title | default:
+                                    'Resolution' }}</span>
+                                <span class="font-medium text-slate-900">{{ product.metafields.custom.spec_1_value |
+                                    default: '24 Megapixels' }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-700">{{ product.metafields.custom.spec_2_title | default:
+                                    'Trigger Speed' }}</span>
+                                <span class="font-medium text-slate-900">{{ product.metafields.custom.spec_2_value |
+                                    default: '0.2 Seconds' }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-700">{{ product.metafields.custom.spec_3_title | default: 'Night
+                                    Range' }}</span>
+                                <span class="font-medium text-slate-900">{{ product.metafields.custom.spec_3_value |
+                                    default: '100 Feet' }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-700">{{ product.metafields.custom.spec_4_title | default:
+                                    'Battery Life' }}</span>
+                                <span class="font-medium text-slate-900">{{ product.metafields.custom.spec_4_value |
+                                    default: '6 Months' }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Price & Savings -->
+                        <div class="bg-white rounded-xl p-4 mb-6 shadow-md">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-slate-700">Regular Price</span>
+                                <span class="text-slate-500 line-through">${{ product.metafields.custom.regular_price |
+                                    default: '339.99' }}</span>
+                            </div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="font-semibold text-slate-900">Today's Price</span>
+                                <span class="font-bold text-2xl text-emerald-600">${{
+                                    product.metafields.custom.sale_price | default: '169.99' }}</span>
+                            </div>
+                            <div class="bg-emerald-100 rounded-lg p-2 text-center">
+                                <span class="text-sm font-medium text-emerald-700">{{
+                                    product.metafields.custom.savings_text | default: 'You Save $169.00 (50% OFF)'
+                                    }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Mini CTA -->
+                        <a href="#packages"
+                            class="block w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold text-center py-4 rounded-xl hover:shadow-lg transition-all">
+                            <i class="fas fa-shopping-cart mr-2"></i>
+                            {{ product.metafields.custom.gallery_cta_text | default: 'Add to Cart' }}
+                        </a>
+
+                        <!-- Trust Badge -->
+                        <div class="flex items-center justify-center gap-2 mt-4 text-sm text-slate-600">
+                            <i class="fas fa-shield-alt text-emerald-600"></i>
+                            {{ product.metafields.custom.gallery_trust_text | default: '90-Day Money Back Guarantee' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Highlights -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-12">
+                {% for i in (1..4) %}
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                        {% assign highlight_icon_key = 'highlight_' | append: i | append: '_icon' %}
+                        <i class="fas fa-{{ product.metafields.custom[highlight_icon_key] | default: 'microchip' }} text-emerald-600 text-xl"></i>
+                    </div>
+                    {% assign highlight_title_key = 'highlight_' | append: i | append: '_title' %}
+                    {% assign highlight_subtitle_key = 'highlight_' | append: i | append: '_subtitle' %}
+                    <p class="font-semibold text-slate-900">{{ product.metafields.custom[highlight_title_key] | default: 'Feature ' | append: i }}</p>
+                    <p class="text-sm text-slate-600">{{ product.metafields.custom[highlight_subtitle_key] | default: 'Description ' | append: i }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section (Simplified) -->
+    <!-- How It Works Section (Simplified) -->
+    <section class="py-20 lg:py-28 bg-slate-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+            <!-- Section Header -->
+            <div class="text-center mb-12 lg:mb-16">
+                <span
+                    class="inline-block bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-base font-semibold mb-5">
+                    HOW IT WORKS
+                </span>
+                <h2 class="font-space font-bold text-3xl sm:text-4xl lg:text-5xl text-slate-900 mb-6">
+                    Simple, Fast,
+                    <span class="gradient-text"> Powerful</span>
+                </h2>
+                <p class="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto">
+                    From unboxing to receiving photos - everything just works
+                </p>
+            </div>
+
+            <!-- Process Flow -->
+            <div class="grid md:grid-cols-3 gap-8 lg:gap-12 mb-16">
+                <!-- Mount -->
+                <div class="text-center group">
+                    <div class="relative mb-6">
+                        <div
+                            class="w-24 h-24 bg-gradient-to-br from-emerald-100 to-green-100 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
+                            <i class="fas fa-tree text-emerald-600 text-3xl"></i>
+                        </div>
+                        <!-- Connector Line - Hidden on Mobile -->
+                        <div
+                            class="hidden md:block absolute top-12 left-full w-full h-0.5 bg-gradient-to-r from-emerald-200 to-transparent">
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-xl text-slate-900 mb-3">Mount Anywhere</h3>
+                    <p class="text-slate-600">
+                        Strap to any tree in seconds. No tools needed. Weatherproof design handles any conditions.
+                    </p>
+                </div>
+
+                <!-- Connect -->
+                <div class="text-center group">
+                    <div class="relative mb-6">
+                        <div
+                            class="w-24 h-24 bg-gradient-to-br from-emerald-100 to-green-100 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
+                            <i class="fas fa-signal text-emerald-600 text-3xl"></i>
+                        </div>
+                        <!-- Connector Line - Hidden on Mobile -->
+                        <div
+                            class="hidden md:block absolute top-12 left-full w-full h-0.5 bg-gradient-to-r from-emerald-200 to-transparent">
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-xl text-slate-900 mb-3">Auto Connect</h3>
+                    <p class="text-slate-600">
+                        Camera automatically finds the strongest cell signal. Download the free app and scan QR code to
+                        pair.
+                    </p>
+                </div>
+
+                <!-- Receive -->
+                <div class="text-center group">
+                    <div class="relative mb-6">
+                        <div
+                            class="w-24 h-24 bg-gradient-to-br from-emerald-100 to-green-100 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
+                            <i class="fas fa-mobile-alt text-emerald-600 text-3xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-xl text-slate-900 mb-3">Get Photos</h3>
+                    <p class="text-slate-600">
+                        Receive HD photos in 30 seconds. View, save, and share from anywhere in the world.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Visual Timeline -->
+            <div class="bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-8 lg:p-12 mb-12">
+                <div class="grid lg:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="font-bold text-2xl text-slate-900 mb-6">Your Complete Wildlife Intelligence System
+                        </h3>
+
+                        <div class="space-y-6">
+                            <!-- Feature 1 -->
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-10 h-10 bg-white rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
+                                    <i class="fas fa-check text-emerald-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-semibold text-slate-900 mb-1">Instant Setup</h4>
+                                    <p class="text-slate-600 text-base">
+                                        5 minutes from box to first photo - no technical knowledge required
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Feature 2 -->
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-10 h-10 bg-white rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
+                                    <i class="fas fa-check text-emerald-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-semibold text-slate-900 mb-1">Smart Detection</h4>
+                                    <p class="text-slate-600 text-base">
+                                        AI filters out wind and branches - only get photos of actual wildlife
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Feature 3 -->
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-10 h-10 bg-white rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
+                                    <i class="fas fa-check text-emerald-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-semibold text-slate-900 mb-1">Total Control</h4>
+                                    <p class="text-slate-600 text-base">
+                                        Change settings, view live feed, manage multiple cameras from your phone
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Diagram -->
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&fit=crop"
+                            alt="TrailVision app on phone showing wildlife photos" class="w-full rounded-xl shadow-xl">
+
+                        <!-- Floating Elements -->
+                        <div
+                            class="absolute -top-4 -right-4 bg-white rounded-lg px-4 py-2 shadow-lg flex items-center gap-2">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span class="text-sm font-medium text-slate-700">Live Connected</span>
+                        </div>
+
+                        <div class="absolute -bottom-4 -left-4 bg-white rounded-lg px-4 py-2 shadow-lg">
+                            <p class="text-sm font-semibold text-slate-900">30 sec delivery</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Start Guide -->
+            <div class="text-center">
+                <!-- CTA -->
+                <a href="#packages"
+                    class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold px-8 py-4 rounded-xl hover:shadow-xl transition-all transform hover:scale-105">
+                    <i class="fas fa-rocket"></i>
+                    <span>Start Getting Photos Today</span>
+                </a>
+
+                <p class="text-base text-slate-600 mt-4">
+                    <i class="fas fa-users text-emerald-600 mr-1"></i>
+                    Join 12,847+ hunters already using TrailVision
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .font-space {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .fa-arrow-right {
+                display: none;
+            }
+        }
+
+        /* Animation for pulse effect */
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+
+    <!-- Performance Features Section -->
+    <section id="features" class="py-20 lg:py-28 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+            <!-- Section Header -->
+            <div class="text-center mb-14 lg:mb-16">
+                <span
+                    class="inline-block bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-semibold mb-5">
+                    PERFORMANCE FEATURES
+                </span>
+                <h2 class="font-space font-bold text-3xl sm:text-4xl lg:text-5xl text-slate-900 mb-6">
+                    Built For
+                    <span class="gradient-text"> Real Hunters</span>
+                </h2>
+                <p class="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto">Every detail optimized for the field</p>
+            </div>
+
+            <!-- Features Zigzag Layout -->
+            <div class="space-y-20">
+                <!-- Feature 1 - Left Image -->
+                <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                    <div class="relative">
+                        <div class="rounded-2xl overflow-hidden shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1516571748831-5d81767b788d?w=600&h=400&fit=crop"
+                                alt="Crystal clear wildlife photo" class="w-full h-auto">
+                        </div>
+                        <div
+                            class="absolute -bottom-4 -right-4 bg-emerald-500 text-white rounded-xl px-4 py-2 font-bold shadow-lg">
+                            24MP Resolution
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div
+                                class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-camera text-white text-lg"></i>
+                            </div>
+                            <h3 class="font-space font-bold text-2xl text-slate-900">Crystal Clear Day & Night</h3>
+                        </div>
+                        <p class="text-lg text-slate-600 mb-6">
+                            24MP photos capture every detail. 940nm invisible IR LEDs provide crystal clear night vision
+                            up to 100ft
+                            without spooking game.
+                        </p>
+                        <div class="space-y-3 sm:grid sm:grid-cols-2 gap-4">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check-circle text-emerald-500"></i>
+                                <span class="text-slate-700">4K video recording</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check-circle text-emerald-500"></i>
+                                <span class="text-slate-700">No-glow technology</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 2 - Right Image -->
+                <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                    <div class="order-2 lg:order-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div
+                                class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-bolt text-white text-lg"></i>
+                            </div>
+                            <h3 class="font-space font-bold text-2xl text-slate-900">Lightning Fast Detection</h3>
+                        </div>
+                        <p class="text-lg text-slate-600 mb-6">
+                            0.2 second trigger speed with 120° detection angle ensures you never miss anything. Advanced
+                            PIR sensor
+                            detects motion instantly.
+                        </p>
+                        <div class="space-y-3 sm:grid sm:grid-cols-2 gap-4">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check-circle text-emerald-500"></i>
+                                <span class="text-slate-700">0.2s trigger speed</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check-circle text-emerald-500"></i>
+                                <span class="text-slate-700">120° wide angle</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative order-1 lg:order-2">
+                        <div class="rounded-2xl overflow-hidden shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&fit=crop"
+                                alt="Fast trigger speed demonstration" class="w-full h-auto">
+                        </div>
+                        <div
+                            class="absolute -bottom-4 -left-4 bg-emerald-500 text-white rounded-xl px-4 py-2 font-bold shadow-lg">
+                            0.2 Second Trigger
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 3 - Left Image -->
+                <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                    <div>
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div
+                                    class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-shield-alt text-white text-lg"></i>
+                                </div>
+                                <h3 class="font-space font-bold text-2xl text-slate-900">Extreme Durability</h3>
+                            </div>
+                            <p class="text-lg text-slate-600 mb-6">
+                                Military-grade construction withstands -20°F to 140°F. IP66 weatherproof rating means
+                                rain, snow, dust -
+                                nothing stops TrailVision.
+                            </p>
+                            <div class="space-y-3 sm:grid sm:grid-cols-2 gap-4">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-check-circle text-emerald-500"></i>
+                                    <span class="text-slate-700">-20°F to 140°F</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-check-circle text-emerald-500"></i>
+                                    <span class="text-slate-700">6-month battery</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Features Grid -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mt-20 pt-20 border-t border-slate-200">
+                    <div class="text-center">
+                        <div
+                            class="w-14 h-14 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-brain text-emerald-600 text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-slate-900 mb-1">AI Detection</h4>
+                        <p class="text-sm text-slate-600">Filters false triggers</p>
+                    </div>
+
+                    <div class="text-center">
+                        <div
+                            class="w-14 h-14 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-map-marker-alt text-emerald-600 text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-slate-900 mb-1">GPS Tracking</h4>
+                        <p class="text-sm text-slate-600">Location tagged photos</p>
+                    </div>
+
+                    <div class="text-center">
+                        <div
+                            class="w-14 h-14 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-calendar text-emerald-600 text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-slate-900 mb-1">Time Lapse</h4>
+                        <p class="text-sm text-slate-600">Custom intervals</p>
+                    </div>
+
+                    <div class="text-center">
+                        <div
+                            class="w-14 h-14 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-users text-emerald-600 text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-slate-900 mb-1">Multi-User</h4>
+                        <p class="text-sm text-slate-600">Share with team</p>
+                    </div>
+                </div>
+
+                <!-- Bottom CTA -->
+                <div class="text-center mt-16">
+                    <p class="text-xl font-semibold text-slate-900 mb-6">The most advanced trail camera technology
+                        available</p>
+                    <a href="#packages"
+                        class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold px-10 py-4 rounded-xl hover:shadow-xl transition-all transform hover:scale-105">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Get Your TrailVision Pro X50</span>
+                    </a>
+                    <div class="flex items-center justify-center gap-4 mt-4 text-sm text-slate-600">
+                        <span class="flex items-center gap-1">
+                            <i class="fas fa-truck text-emerald-600"></i>
+                            Ships in 24 hours
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <i class="fas fa-shield-alt text-emerald-600"></i>
+                            90-day guarantee
+                        </span>
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    <script>
+        // Gallery slider functionality
+        let currentSlide = 1;
+        const totalSlides = 7;
+
+        function showSlide(slideNumber) {
+            // Hide all slides
+            const slides = document.querySelectorAll('.gallery-slide');
+            slides.forEach((slide) => {
+                slide.style.display = 'none';
+            });
+
+            // Show current slide
+            const currentSlideElement = document.querySelector(`[data-slide="${slideNumber}"]`);
+            if (currentSlideElement) {
+                currentSlideElement.style.display = 'block';
+            }
+
+            // Update dots
+            const dots = document.querySelectorAll('.gallery-dot');
+            dots.forEach((dot, index) => {
+                if (index === slideNumber - 1) {
+                    dot.classList.add('bg-emerald-500');
+                    dot.classList.remove('bg-slate-300', 'hover:bg-slate-400');
+                } else {
+                    dot.classList.remove('bg-emerald-500');
+                    dot.classList.add('bg-slate-300', 'hover:bg-slate-400');
+                }
+            });
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+
+            // Loop around
+            if (currentSlide > totalSlides) {
+                currentSlide = 1;
+            } else if (currentSlide < 1) {
+                currentSlide = totalSlides;
+            }
+
+            showSlide(currentSlide);
+        }
+
+        function goToSlide(slideNumber) {
+            currentSlide = slideNumber;
+            showSlide(currentSlide);
+        }
+
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        const slider = document.getElementById('gallery-slider');
+        if (slider) {
+            slider.addEventListener('touchstart', function (e) {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+
+            slider.addEventListener('touchend', function (e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+        }
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                // Swipe left - next slide
+                changeSlide(1);
+            }
+            if (touchEndX > touchStartX + 50) {
+                // Swipe right - previous slide
+                changeSlide(-1);
+            }
+        }
+    </script>
+    <!-- Phase 3: Customer Reviews, Package Selection, Guarantee, Final CTA -->
+
+    <style>
+        /* Font styles */
+        .font-space {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Review images grid */
+        .review-images-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        @media (min-width: 1024px) {
+            .review-images-grid {
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .review-images-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .review-images-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Package hover effects */
+        .package-card {
+            transition: all 0.3s ease;
+        }
+
+        .package-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Most popular badge animation */
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .pulse-badge {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Guarantee section pattern */
+        .guarantee-pattern {
+            background-image: radial-gradient(circle at 1px 1px, rgb(16 185 129 / 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+
+    <!-- Comparison Section -->
+    <section class="py-20 lg:py-28 bg-slate-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+            <!-- Section Header -->
+            <div class="text-center mb-12 lg:mb-16">
+                <span
+                    class="inline-block bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-semibold mb-5">
+                    COMPARISON
+                </span>
+                <h2 class="font-space font-bold text-3xl sm:text-4xl lg:text-5xl text-slate-900 mb-6">
+                    See The
+                    <span class="gradient-text"> TrailVision Advantage</span>
+                </h2>
+                <p class="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto">
+                    Why smart hunters are switching to TrailVision Pro X50
+                </p>
+            </div>
+
+            <!-- Responsive Comparison Table -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-auto">
+                <table class="w-full min-w-[600px]">
+                    <!-- Table Header -->
+                    <thead class="bg-gradient-to-r from-slate-900 to-slate-800">
+                        <tr>
+                            <th class="text-left p-4 sm:p-6 text-white font-semibold">Features</th>
+                            <th class="text-center p-4 sm:p-6 min-w-[150px]">
+                                <div class="bg-gradient-to-r from-emerald-500 to-green-500 rounded-lg px-3 py-2">
+                                    <p class="text-white font-bold">TrailVision Pro X50</p>
+                                    <p class="text-emerald-100 text-xs">$169</p>
+                                </div>
+                            </th>
+                            <th class="text-center p-4 sm:p-6 text-gray-400 min-w-[150px]">
+                                <p class="font-semibold">Brand X</p>
+                                <p class="text-xs">$299</p>
+                            </th>
+                            <th class="text-center p-4 sm:p-6 text-gray-400 min-w-[150px]">
+                                <p class="font-semibold">Brand Y</p>
+                                <p class="text-xs">$249</p>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <!-- Table Body -->
+                    <tbody class="divide-y divide-slate-200">
+                        <!-- Row 1 -->
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-4 sm:p-6 font-medium text-slate-900">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-wifi text-emerald-600 text-sm"></i>
+                                    <span>4G LTE Connectivity</span>
+                                </div>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <i class="fas fa-check-circle text-emerald-500 text-xl"></i>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <i class="fas fa-times-circle text-red-400 text-xl"></i>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <i class="fas fa-times-circle text-red-400 text-xl"></i>
+                            </td>
+                        </tr>
+
+                        <!-- Row 2 -->
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-4 sm:p-6 font-medium text-slate-900">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-bolt text-emerald-600 text-sm"></i>
+                                    <span>Instant Photo Delivery</span>
+                                </div>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-emerald-600 font-semibold">30 sec</span>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-gray-400">Manual</span>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-gray-400">WiFi only</span>
+                            </td>
+                        </tr>
+
+                        <!-- Row 3 -->
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-4 sm:p-6 font-medium text-slate-900">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-camera text-emerald-600 text-sm"></i>
+                                    <span>Photo Resolution</span>
+                                </div>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-emerald-600 font-semibold">24MP</span>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-gray-400">16MP</span>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-gray-400">20MP</span>
+                            </td>
+                        </tr>
+
+                        <!-- Row 4 -->
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-4 sm:p-6 font-medium text-slate-900">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-video text-emerald-600 text-sm"></i>
+                                    <span>Video Quality</span>
+                                </div>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-emerald-600 font-semibold">4K</span>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-gray-400">1080p</span>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-gray-400">1080p</span>
+                            </td>
+                        </tr>
+
+                        <!-- Row 5 -->
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-4 sm:p-6 font-medium text-slate-900">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-moon text-emerald-600 text-sm"></i>
+                                    <span>Night Vision Range</span>
+                                </div>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-emerald-600 font-semibold">100ft</span>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-gray-400">65ft</span>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-gray-400">80ft</span>
+                            </td>
+                        </tr>
+
+                        <!-- Row 6 -->
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-4 sm:p-6 font-medium text-slate-900">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-battery-full text-emerald-600 text-sm"></i>
+                                    <span>Battery Life</span>
+                                </div>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-emerald-600 font-semibold">6 months</span>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-gray-400">3 months</span>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-gray-400">4 months</span>
+                            </td>
+                        </tr>
+
+                        <!-- Row 9 -->
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-4 sm:p-6 font-medium text-slate-900">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-shield-alt text-emerald-600 text-sm"></i>
+                                    <span>Guarantee</span>
+                                </div>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-emerald-600 font-semibold">90 Days</span>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-gray-400">30 Days</span>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <span class="text-gray-400">30 Days</span>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <!-- Table Footer -->
+                    <tfoot class="bg-gradient-to-r from-emerald-50 to-green-50">
+                        <tr>
+                            <td class="p-4 sm:p-6 font-bold text-slate-900">Total Value</td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <div>
+                                    <p class="text-2xl font-bold text-emerald-600">$169</p>
+                                    <p class="text-xs text-slate-600 line-through">$338</p>
+                                    <span
+                                        class="inline-block mt-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                                        SAVE 50%
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <p class="text-xl text-gray-500">$299</p>
+                            </td>
+                            <td class="p-4 sm:p-6 text-center">
+                                <p class="text-xl text-gray-500">$249</p>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- Mobile Scroll Indicator -->
+            <p class="text-center text-sm text-slate-500 mt-4 sm:hidden">
+                <i class="fas fa-arrow-left mr-1"></i>
+                Swipe to compare
+                <i class="fas fa-arrow-right ml-1"></i>
+            </p>
+
+            <!-- Winner Badge -->
+            <div class="text-center mt-8">
+                <div
+                    class="inline-flex items-center gap-3 bg-emerald-100 border-2 border-emerald-300 rounded-full px-6 py-3">
+                    <i class="fas fa-trophy text-emerald-600 text-xl"></i>
+                    <p class="font-semibold text-emerald-800">TrailVision Pro X50 - Best Value & Most Features</p>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="text-center mt-8">
+                <a href="#packages"
+                    class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold px-8 py-4 rounded-xl hover:shadow-xl transition-all transform hover:scale-105">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Get The #1 Rated Trail Camera</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .font-space {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Responsive table scrolling */
+        @media (max-width: 768px) {
+            table {
+                font-size: 14px;
+            }
+
+            th,
+            td {
+                padding: 12px !important;
+            }
+        }
+    </style>
+    <!-- Customer Reviews Section -->
+    <section id="reviews" class="py-20 lg:py-28 bg-slate-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+            <!-- Section Header -->
+            <div class="text-center mb-12 lg:mb-16">
+                <span
+                    class="inline-block bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-semibold mb-5">
+                    VERIFIED REVIEWS
+                </span>
+                <h2 class="font-space font-bold text-3xl sm:text-4xl lg:text-5xl text-slate-900 mb-6">
+                    Real Results From
+                    <span class="gradient-text"> Real Hunters</span>
+                </h2>
+                <p class="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto">
+                    Join thousands of satisfied customers getting better hunting results
+                </p>
+            </div>
+
+            <!-- Product Review Images Grid (6 images) -->
+            <div class="mb-16">
+                <h3 class="text-center text-2xl font-bold text-slate-900 mb-8">Customer Wildlife Captures</h3>
+                <div class="review-images-grid">
+                    <div class="relative rounded-xl overflow-hidden shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1484406566174-9da000fda645?w=400&h=400&fit=crop"
+                            alt="Customer wildlife photo 1" class="w-full h-full object-cover aspect-square">
+                    </div>
+                    <div class="relative rounded-xl overflow-hidden shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1549366021-9f761d450615?w=400&h=400&fit=crop"
+                            alt="Customer wildlife photo 2" class="w-full h-full object-cover aspect-square">
+                    </div>
+                    <div class="relative rounded-xl overflow-hidden shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=400&h=400&fit=crop"
+                            alt="Customer wildlife photo 3" class="w-full h-full object-cover aspect-square">
+                    </div>
+                    <div class="relative rounded-xl overflow-hidden shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1542856204-00101eb6def4?w=400&h=400&fit=crop"
+                            alt="Customer wildlife photo 4" class="w-full h-full object-cover aspect-square">
+                    </div>
+                    <div class="relative rounded-xl overflow-hidden shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1516571748831-5d81767b788d?w=400&h=400&fit=crop"
+                            alt="Customer wildlife photo 5" class="w-full h-full object-cover aspect-square">
+                    </div>
+                    <div class="relative rounded-xl overflow-hidden shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1534759846116-5799c33ce22a?w=400&h=400&fit=crop"
+                            alt="Customer wildlife photo 6" class="w-full h-full object-cover aspect-square">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text Reviews -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Review 1 -->
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <div class="flex mb-3">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-slate-900 mb-2">Game Changer for My Hunting</h4>
+                    <p class="text-slate-600 mb-4">
+                        "The instant notifications are incredible. I knew exactly when the big buck was visiting my
+                        stand and
+                        planned my hunt perfectly. Got him on day 2!"
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                            <span class="font-bold text-emerald-600">JM</span>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm text-slate-900">John M.</p>
+                            <p class="text-xs text-slate-500">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <div class="flex mb-3">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-slate-900 mb-2">Crystal Clear Night Photos</h4>
+                    <p class="text-slate-600 mb-4">
+                        "The night vision is amazing! I can see every detail even in complete darkness. Way better than
+                        my old
+                        cameras that cost twice as much."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                            <span class="font-bold text-emerald-600">RT</span>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm text-slate-900">Robert T.</p>
+                            <p class="text-xs text-slate-500">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <div class="flex mb-3">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-slate-900 mb-2">Setup Was So Easy</h4>
+                    <p class="text-slate-600 mb-4">
+                        "I'm not tech savvy but had this running in 5 minutes. The app is super simple and getting
+                        photos
+                        instantly is addictive!"
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                            <span class="font-bold text-emerald-600">MS</span>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm text-slate-900">Mike S.</p>
+                            <p class="text-xs text-slate-500">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 4 -->
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <div class="flex mb-3">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-slate-900 mb-2">Worth Every Penny</h4>
+                    <p class="text-slate-600 mb-4">
+                        "Bought 3 of these for different stands. The battery life is incredible and being able to check
+                        all
+                        cameras from my phone is priceless."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                            <span class="font-bold text-emerald-600">DW</span>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm text-slate-900">David W.</p>
+                            <p class="text-xs text-slate-500">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 5 -->
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <div class="flex mb-3">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-slate-900 mb-2">Finally, Real-Time Intel</h4>
+                    <p class="text-slate-600 mb-4">
+                        "No more driving hours to check cards! I get photos instantly and can pattern deer from my
+                        couch. This is
+                        the future of hunting."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                            <span class="font-bold text-emerald-600">BJ</span>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm text-slate-900">Brad J.</p>
+                            <p class="text-xs text-slate-500">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 6 -->
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <div class="flex mb-3">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-slate-900 mb-2">Tough as Nails</h4>
+                    <p class="text-slate-600 mb-4">
+                        "Survived -15°F winter and torrential rain. Still working perfectly after 8 months. Best trail
+                        camera
+                        investment I've made."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                            <span class="font-bold text-emerald-600">TH</span>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm text-slate-900">Tom H.</p>
+                            <p class="text-xs text-slate-500">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Review Stats - Mobile Optimized -->
+            <div class="mt-12">
+                <div class="bg-white rounded-2xl shadow-lg p-6 lg:p-8 max-w-2xl mx-auto">
+                    <!-- Mobile: Stack vertically, Desktop: Horizontal -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4">
+                        <div class="text-center">
+                            <div class="flex justify-center items-baseline gap-2 mb-2">
+                                <p class="text-3xl lg:text-4xl font-bold text-slate-900">4.9</p>
+                                <span class="text-2xl text-slate-400">/5</span>
+                            </div>
+                            <p class="text-sm lg:text-base text-slate-600">Average Rating</p>
+                        </div>
+
+                        <div
+                            class="text-center border-t sm:border-t-0 sm:border-l sm:border-r border-slate-200 pt-6 sm:pt-0">
+                            <p class="text-3xl lg:text-4xl font-bold text-slate-900 mb-2">2,847</p>
+                            <p class="text-sm lg:text-base text-slate-600">Verified Reviews</p>
+                        </div>
+
+                        <div class="text-center border-t sm:border-t-0 border-slate-200 pt-6 sm:pt-0">
+                            <p class="text-3xl lg:text-4xl font-bold text-emerald-600 mb-2">98%</p>
+                            <p class="text-sm lg:text-base text-slate-600">Would Recommend</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Package Selection Section -->
+
+    <style>
+        /* Font styles */
+        .font-space {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Package card styles */
+        .package-card {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .package-card:hover {
+            transform: translateY(-8px);
+        }
+
+        /* Most popular animation */
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 20px 10px rgba(16, 185, 129, 0.2);
+            }
+        }
+
+        .popular-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        /* Mobile scroll snap */
+        @media (max-width: 768px) {
+            .packages-container {
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .package-card {
+                scroll-snap-align: center;
+            }
+        }
+
+        /* Savings badge animation */
+        @keyframes savings-pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .savings-badge {
+            animation: savings-pulse 2s ease-in-out infinite;
+        }
+
+        /* Package highlight */
+        .package-highlight {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+    </style>
+
+    <!-- Package Selection Section -->
+    <section id="packages" class="py-20 lg:py-32 bg-gradient-to-b from-white to-slate-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+            <!-- Section Header with Urgency -->
+            <div class="text-center mb-16 lg:mb-20">
+                <!-- Urgency Timer -->
+                <div
+                    class="inline-flex items-center gap-3 bg-red-50 border-2 border-red-200 rounded-full px-6 py-3 mb-6">
+                    <i class="fas fa-fire text-red-500 text-xl animate-pulse"></i>
+                    <span class="font-bold text-red-700 text-base md:text-lg">
+                        50% OFF Sale Ends In: <span id="countdown-timer-pack">08:42:15</span>
+                    </span>
+                </div>
+
+                <h2 class="font-space font-bold text-3xl sm:text-4xl lg:text-6xl text-slate-900 mb-6">
+                    Choose Your
+                    <span class="gradient-text"> Savings Package</span>
+                </h2>
+                <p class="text-lg sm:text-xl lg:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                    The more cameras you buy, the more you save. All packages include the same premium features and
+                    lifetime
+                    support.
+                </p>
+            </div>
+
+            <!-- Value Props Bar -->
+            <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-6 mb-12 lg:mb-16">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div>
+                        <i class="fas fa-shield-alt text-emerald-600 text-2xl mb-2"></i>
+                        <p class="font-semibold text-slate-900">90-Day</p>
+                        <p class="text-sm text-slate-600">Money Back</p>
+                    </div>
+                    <div>
+                        <i class="fas fa-truck text-emerald-600 text-2xl mb-2"></i>
+                        <p class="font-semibold text-slate-900">Free</p>
+                        <p class="text-sm text-slate-600">Fast Shipping</p>
+                    </div>
+                    <div>
+                        <i class="fas fa-mobile-alt text-emerald-600 text-2xl mb-2"></i>
+                        <p class="font-semibold text-slate-900">Lifetime</p>
+                        <p class="text-sm text-slate-600">App Access</p>
+                    </div>
+                    <div>
+                        <i class="fas fa-headset text-emerald-600 text-2xl mb-2"></i>
+                        <p class="font-semibold text-slate-900">24/7</p>
+                        <p class="text-sm text-slate-600">Support</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Packages Grid - Mobile Optimized -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 packages-container">
+                <!-- Package 1 - Starter -->
+                <div
+                    class="package-card bg-white rounded-3xl shadow-lg overflow-hidden border-2 border-slate-200 hover:border-emerald-300 hover:shadow-2xl">
+                    <div class="p-6 sm:p-8 lg:p-10">
+                        <!-- Package Header -->
+                        <div class="text-center mb-6">
+                            <h3 class="text-xl lg:text-2xl font-bold text-slate-900 mb-2">STARTER</h3>
+                            <p class="text-slate-600">Try it risk-free</p>
+                        </div>
+
+                        <!-- Product Image -->
+                        <div class="relative aspect-[1/1] mb-8 bg-gradient-to-b from-slate-50 to-white rounded-xl p-6">
+                            <img src="https://images.unsplash.com/photo-1630331384146-a8b2a79a9558?w=400&h=400&fit=crop"
+                                alt="1 TrailVision Pro X50" class="w-full h-full rounded-lg object-cover">
+                            <div class="absolute top-3 right-3 bg-slate-100 rounded-full px-3 py-1">
+                                <span class="text-sm font-bold text-slate-700">1 Camera</span>
+                            </div>
+                        </div>
+
+                        <!-- Pricing -->
+                        <div class="text-center mb-8 space-y-2">
+                            <p class="text-slate-500 line-through text-xl">$338</p>
+                            <p class="text-5xl lg:text-6xl font-bold text-slate-900">$169</p>
+                            <div class="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full">
+                                <span class="font-bold text-base">Save $169 (50%)</span>
+                            </div>
+                        </div>
+
+                        <!-- What's Included -->
+                        <div class="space-y-3 mb-8">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-check-circle text-emerald-500 text-lg"></i>
+                                <span class="text-slate-700">1 TrailVision Pro X50 Camera</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-check-circle text-emerald-500 text-lg"></i>
+                                <span class="text-slate-700">Complete Mounting Kit</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-check-circle text-emerald-500 text-lg"></i>
+                                <span class="text-slate-700">VIP Support Access</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-gift text-red-500 text-lg"></i>
+                                <span class="text-slate-700 font-semibold">FREE Solar Panel ($49 value)</span>
+                            </div>
+                        </div>
+
+                        <!-- CTA Button -->
+                        <button
+                            class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-lg py-4 rounded-xl transition-all">
+                            Add to Cart
+                        </button>
+
+                        <!-- Per Unit Price -->
+                        <p class="text-center text-sm text-slate-600 mt-4">$169 per camera</p>
+                    </div>
+                </div>
+
+                <!-- Package 2 - Most Popular -->
+                <div
+                    class="bg-white rounded-3xl shadow-2xl border-4 border-emerald-500 transform lg:scale-105 relative">
+                    <!-- Most Popular Badge -->
+                    <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 z-10">
+                        <div
+                            class="bg-gradient-to-r from-emerald-600 to-green-600 text-white px-4 py-2 rounded-full shadow-lg">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-sm">MOST POPULAR</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 sm:p-8 lg:p-10 pt-12 rounded-3xl package-highlight">
+                        <!-- Package Header -->
+                        <div class="text-center mb-6">
+                            <h3 class="text-xl lg:text-2xl font-bold text-slate-900 mb-2">BEST VALUE</h3>
+                            <p class="text-slate-600 font-semibold">Most customers choose this</p>
+                        </div>
+
+                        <!-- Product Image -->
+                        <div class="relative aspect-[1/1] mb-8 bg-white rounded-xl p-6 shadow-inner">
+                            <img src="https://images.unsplash.com/photo-1630331384146-a8b2a79a9558?w=400&h=400&fit=crop"
+                                alt="3 TrailVision Pro X50 cameras" class="w-full h-full rounded-lg object-cover">
+                            <div
+                                class="absolute top-3 right-3 bg-emerald-500 text-white rounded-full px-3 py-1 savings-badge">
+                                <span class="text-sm font-bold">3 Cameras</span>
+                            </div>
+                            <div
+                                class="absolute bottom-3 left-3 bg-red-500 text-white rounded-full px-3 py-1 text-xs font-bold">
+                                BEST DEAL
+                            </div>
+                        </div>
+
+                        <!-- Pricing -->
+                        <div class="text-center mb-8 space-y-2">
+                            <p class="text-slate-500 line-through text-xl">$1,014</p>
+                            <p class="text-5xl lg:text-6xl font-bold text-emerald-600">$399</p>
+                            <div
+                                class="inline-block bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded-full">
+                                <span class="font-bold text-base">Save $615 (61%)</span>
+                            </div>
+                        </div>
+
+                        <!-- What's Included -->
+                        <div class="space-y-3 mb-8">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-check-circle text-emerald-500 text-lg"></i>
+                                <span class="text-slate-700 font-semibold">3 TrailVision Pro X50 Cameras</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-check-circle text-emerald-500 text-lg"></i>
+                                <span class="text-slate-700 font-semibold">3 Complete Mounting Kits</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-check-circle text-emerald-500 text-lg"></i>
+                                <span class="text-slate-700 font-semibold">VIP Support Access</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-gift text-red-500 text-lg"></i>
+                                <span class="text-slate-700 font-semibold">2 FREE Solar Panel ($98 value)</span>
+                            </div>
+                        </div>
+
+                        <!-- CTA Button -->
+                        <button
+                            class="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold text-lg py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+                            Get Best Value Pack
+                        </button>
+
+                        <!-- Per Unit Price -->
+                        <p class="text-center text-sm text-emerald-700 font-semibold mt-4">Only $133 per camera!</p>
+                    </div>
+                </div>
+
+                <!-- Package 3 - Professional -->
+                <div
+                    class="package-card bg-white rounded-3xl shadow-lg overflow-hidden border-2 border-slate-200 hover:border-emerald-300 hover:shadow-2xl">
+                    <div class="p-6 sm:p-8 lg:p-10">
+                        <!-- Package Header -->
+                        <div class="text-center mb-6">
+                            <h3 class="text-xl lg:text-2xl font-bold text-slate-900 mb-2">PROFESSIONAL</h3>
+                            <p class="text-slate-600">Maximum coverage</p>
+                        </div>
+
+                        <!-- Product Image -->
+                        <div class="relative aspect-[1/1] mb-8 bg-gradient-to-b from-slate-50 to-white rounded-xl p-6">
+                            <img src="https://images.unsplash.com/photo-1630331384146-a8b2a79a9558?w=400&h=400&fit=crop"
+                                alt="6 TrailVision Pro X50 cameras" class="w-full h-full rounded-lg object-cover">
+                            <div class="absolute top-3 right-3 bg-slate-100 rounded-full px-3 py-1">
+                                <span class="text-sm font-bold text-slate-700">6 Cameras</span>
+                            </div>
+                        </div>
+
+                        <!-- Pricing -->
+                        <div class="text-center mb-8 space-y-2">
+                            <p class="text-slate-500 line-through text-xl">$2,028</p>
+                            <p class="text-5xl lg:text-6xl font-bold text-slate-900">$699</p>
+                            <div class="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full">
+                                <span class="font-bold text-base">Save $1,329 (66%)</span>
+                            </div>
+                        </div>
+
+                        <!-- What's Included -->
+                        <div class="space-y-3 mb-8">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-check-circle text-emerald-500 text-lg"></i>
+                                <span class="text-slate-700">6 TrailVision Pro X50 Cameras</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-check-circle text-emerald-500 text-lg"></i>
+                                <span class="text-slate-700">6 Complete Mounting Kits</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-check-circle text-emerald-500 text-lg"></i>
+                                <span class="text-slate-700">VIP Support Access</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-gift text-red-500 text-lg"></i>
+                                <span class="text-slate-700">3 FREE Solar Panels ($147 value)</span>
+                            </div>
+                        </div>
+
+                        <!-- CTA Button -->
+                        <button
+                            class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-lg py-4 rounded-xl transition-all">
+                            Add to Cart
+                        </button>
+
+                        <!-- Per Unit Price -->
+                        <p class="text-center text-sm text-slate-600 mt-4">Only $116 per camera</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trust & Urgency Section -->
+            <div class="mt-16 lg:mt-20 text-center space-y-6">
+                <!-- Stock Warning -->
+                <div
+                    class="inline-flex items-center gap-3 bg-yellow-50 border-2 border-yellow-300 rounded-full px-6 py-3">
+                    <i class="fas fa-exclamation-triangle text-yellow-600 text-lg"></i>
+                    <p class="text-yellow-800 font-semibold text-base">Warning: Only 47 units left at this price</p>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="flex flex-wrap justify-center items-center gap-4">
+                    <span class="text-slate-600 font-medium">Secure Payment:</span>
+                    <i class="fab fa-cc-visa text-3xl text-slate-700"></i>
+                    <i class="fab fa-cc-mastercard text-3xl text-slate-700"></i>
+                    <i class="fab fa-cc-amex text-3xl text-slate-700"></i>
+                    <i class="fab fa-cc-paypal text-3xl text-slate-700"></i>
+                    <i class="fab fa-amazon-pay text-3xl text-slate-700"></i>
+                </div>
+
+                <!-- Security Badge -->
+                <div class="flex justify-center items-center gap-2 text-sm text-slate-600">
+                    <i class="fas fa-lock text-green-600"></i>
+                    <span>256-bit SSL Encrypted Checkout</span>
+                </div>
+            </div>
+
+            <!-- Customer Testimonial Bar -->
+            <div class="mt-16 bg-gradient-to-r from-slate-100 to-slate-50 rounded-2xl p-6 lg:p-8">
+                <div class="flex items-center justify-center gap-6">
+                    <div class="hidden md:block">
+                        <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
+                            <span class="text-2xl font-bold text-emerald-600">JH</span>
+                        </div>
+                    </div>
+                    <div class="text-center md:text-left">
+                        <p class="text-slate-700 italic text-base lg:text-lg mb-2">
+                            "I bought the 3-pack and it completely changed my hunting game. Best investment I've made!"
+                        </p>
+                        <div class="flex items-center justify-center md:justify-start gap-2">
+                            <div class="flex">
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                            </div>
+                            <span class="text-sm text-slate-600 font-medium">James H. - Verified Buyer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Countdown Timer
+        function updateCountdown() {
+            const countdownElement = document.getElementById('countdown-timer');
+            if (countdownElement) {
+                // Simple countdown logic (you can enhance this)
+                let hours = 08;
+                let minutes = 42;
+                let seconds = 15;
+
+                setInterval(() => {
+                    seconds--;
+                    if (seconds < 0) {
+                        seconds = 59;
+                        minutes--;
+                        if (minutes < 0) {
+                            minutes = 59;
+                            hours--;
+                            if (hours < 0) {
+                                hours = 23;
+                            }
+                        }
+                    }
+
+                    countdownElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes
+                        .toString()
+                        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+            }
+        }
+
+        // Initialize countdown on page load
+        updateCountdown();
+
+        // Countdown Timer
+        function updateCountdownpack() {
+            const countdownElement = document.getElementById('countdown-timer-pack');
+            if (countdownElement) {
+                // Simple countdown logic (you can enhance this)
+                let hours = 08;
+                let minutes = 42;
+                let seconds = 15;
+
+                setInterval(() => {
+                    seconds--;
+                    if (seconds < 0) {
+                        seconds = 59;
+                        minutes--;
+                        if (minutes < 0) {
+                            minutes = 59;
+                            hours--;
+                            if (hours < 0) {
+                                hours = 23;
+                            }
+                        }
+                    }
+
+                    countdownElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes
+                        .toString()
+                        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+            }
+        }
+
+        // Initialize countdown on page load
+        updateCountdownpack();
+    </script>
+
+    <!-- Guarantee Section -->
+    <section class="pb-20 lg:pb-28 bg-gradient-to-br from-emerald-50 to-green-50 guarantee-pattern">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+                <div class="grid md:grid-cols-2">
+                    <!-- Left Side - Badge -->
+                    <div
+                        class="bg-gradient-to-br from-emerald-600 to-green-600 p-8 lg:p-12 flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6">
+                                <i class="fas fa-shield-alt text-emerald-600 text-4xl"></i>
+                            </div>
+                            <h3 class="text-white text-3xl font-bold mb-3">90-Day</h3>
+                            <p class="text-white text-xl">Money Back Guarantee</p>
+                        </div>
+                    </div>
+
+                    <!-- Right Side - Details -->
+                    <div class="p-8 lg:p-12">
+                        <h2 class="font-space font-bold text-3xl text-slate-900 mb-4">Your Purchase is 100% Risk-Free
+                        </h2>
+                        <p class="text-lg text-slate-600 mb-6">
+                            We're so confident you'll love the TrailVision Pro X50 that we offer an unconditional 90-day
+                            money-back
+                            guarantee.
+                        </p>
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+                                <span class="text-slate-700">Try it for 90 full days</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+                                <span class="text-slate-700">Not satisfied? Get 100% of your money back</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+                                <span class="text-slate-700">No questions asked, no hassles</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+                                <span class="text-slate-700">Keep the bonus accessories as our gift</span>
+                            </li>
+                        </ul>
+                        <p class="text-sm text-slate-600 italic">
+                            "We stand behind our product 100%. Your satisfaction is our top priority."
+                        </p>
+                        <p class="text-sm font-semibold text-slate-900 mt-2">- TrailVision Team</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="flex flex-wrap justify-center gap-8 mt-12">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-lock text-slate-600 text-2xl"></i>
+                    <span class="text-slate-700 font-medium">Secure Checkout</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-truck text-slate-600 text-2xl"></i>
+                    <span class="text-slate-700 font-medium">Free Shipping</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-headset text-slate-600 text-2xl"></i>
+                    <span class="text-slate-700 font-medium">24/7 Support</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-award text-slate-600 text-2xl"></i>
+                    <span class="text-slate-700 font-medium">1 Year Warranty</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-20 lg:py-28 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+            <!-- Section Header -->
+            <div class="text-center mb-12">
+                <span
+                    class="inline-block bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-semibold mb-5">
+                    FAQ
+                </span>
+                <h2 class="font-space font-bold text-3xl sm:text-4xl lg:text-5xl text-slate-900 mb-6">Common Questions
+                </h2>
+            </div>
+
+            <!-- FAQ Items -->
+            <div class="space-y-4">
+                <div class="bg-slate-50 rounded-xl p-6">
+                    <button onclick="toggleFAQ(1)" class="w-full flex items-center justify-between text-left">
+                        <h3 class="font-semibold text-lg text-slate-900">Does it work without WiFi?</h3>
+                        <i class="fas fa-chevron-down text-slate-600 transition-transform" id="faq-icon-1"></i>
+                    </button>
+                    <div class="mt-4 text-slate-600 hidden" id="faq-content-1">
+                        Yes! The TrailVision Pro X50 uses built-in 4G LTE cellular technology. It works anywhere with
+                        cell phone
+                        coverage - no WiFi or bluetooth needed.
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 rounded-xl p-6">
+                    <button onclick="toggleFAQ(2)" class="w-full flex items-center justify-between text-left">
+                        <h3 class="font-semibold text-lg text-slate-900">What cellular networks does it support?</h3>
+                        <i class="fas fa-chevron-down text-slate-600 transition-transform" id="faq-icon-2"></i>
+                    </button>
+                    <div class="mt-4 text-slate-600 hidden" id="faq-content-2">
+                        Works with AT&T, Verizon, and T-Mobile networks. The camera automatically connects to the
+                        strongest
+                        available signal in your area.
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 rounded-xl p-6">
+                    <button onclick="toggleFAQ(3)" class="w-full flex items-center justify-between text-left">
+                        <h3 class="font-semibold text-lg text-slate-900">Is there a monthly fee?</h3>
+                        <i class="fas fa-chevron-down text-slate-600 transition-transform" id="faq-icon-3"></i>
+                    </button>
+                    <div class="mt-4 text-slate-600 hidden" id="faq-content-3">
+                        Data plans start at just $5/month for 250 photos. First month is FREE with purchase. No
+                        contracts, cancel
+                        anytime.
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 rounded-xl p-6">
+                    <button onclick="toggleFAQ(4)" class="w-full flex items-center justify-between text-left">
+                        <h3 class="font-semibold text-lg text-slate-900">How long does the battery last?</h3>
+                        <i class="fas fa-chevron-down text-slate-600 transition-transform" id="faq-icon-4"></i>
+                    </button>
+                    <div class="mt-4 text-slate-600 hidden" id="faq-content-4">
+                        Up to 6 months on 8 AA batteries (included). Optional solar panel available for unlimited power.
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 rounded-xl p-6">
+                    <button onclick="toggleFAQ(5)" class="w-full flex items-center justify-between text-left">
+                        <h3 class="font-semibold text-lg text-slate-900">What's the photo quality like?</h3>
+                        <i class="fas fa-chevron-down text-slate-600 transition-transform" id="faq-icon-5"></i>
+                    </button>
+                    <div class="mt-4 text-slate-600 hidden" id="faq-content-5">
+                        24MP photos and 4K video with audio. Crystal clear day and night vision up to 100ft with
+                        invisible IR
+                        technology.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="py-20 lg:py-28 bg-gradient-to-r from-slate-900 to-slate-800">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl text-center">
+            <!-- Urgency Badge -->
+            <div class="inline-flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-full mb-8 animate-pulse">
+                <i class="fas fa-clock"></i>
+                <span class="font-semibold">Limited Time: 50% OFF Ends Soon</span>
+            </div>
+
+            <!-- Headline -->
+            <h2 class="font-space font-bold text-4xl sm:text-5xl lg:text-6xl text-white mb-6">
+                Ready to Transform Your Hunting?
+            </h2>
+
+            <!-- Subheadline -->
+            <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                Join 12,847+ hunters already using TrailVision to track patterns, plan hunts, and harvest more game than
+                ever
+                before.
+            </p>
+
+            <!-- Benefits Reminder -->
+            <div class="grid sm:grid-cols-3 gap-6 mb-10 max-w-3xl mx-auto">
+                <div class="text-center">
+                    <i class="fas fa-bolt text-emerald-400 text-3xl mb-3"></i>
+                    <p class="text-white font-semibold">Instant Photos</p>
+                    <p class="text-gray-400 text-sm">30-second delivery</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-wifi text-emerald-400 text-3xl mb-3"></i>
+                    <p class="text-white font-semibold">No WiFi Needed</p>
+                    <p class="text-gray-400 text-sm">4G LTE built-in</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-shield-alt text-emerald-400 text-3xl mb-3"></i>
+                    <p class="text-white font-semibold">Risk-Free</p>
+                    <p class="text-gray-400 text-sm">90-day guarantee</p>
+                </div>
+            </div>
+
+            <!-- Price & CTA -->
+            <div class="bg-white/10 backdrop-blur rounded-2xl p-8 mb-8 max-w-xl mx-auto">
+                <div class="flex items-center justify-center gap-4 mb-6">
+                    <span class="text-3xl text-gray-400 line-through">$338</span>
+                    <span class="text-5xl font-bold text-white">$169</span>
+                    <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">50% OFF</span>
+                </div>
+
+                <a href="#packages"
+                    class="block w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold text-xl py-5 rounded-xl shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all">
+                    <i class="fas fa-shopping-cart mr-2"></i>
+                    Get Your TrailVision Pro X50 Now
+                </a>
+
+                <p class="text-gray-400 text-sm mt-4">
+                    <i class="fas fa-lock mr-1"></i>
+                    Secure checkout • Ships in 24 hours
+                </p>
+            </div>
+
+            <!-- Final Trust Elements -->
+            <div class="flex flex-wrap justify-center gap-6 text-gray-400 text-sm">
+                <span><i class="fas fa-check text-emerald-400 mr-1"></i> Free Shipping</span>
+                <span><i class="fas fa-check text-emerald-400 mr-1"></i> 90-Day Guarantee</span>
+                <span><i class="fas fa-check text-emerald-400 mr-1"></i> 24/7 Support</span>
+                <span><i class="fas fa-check text-emerald-400 mr-1"></i> 1 Year Warranty</span>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // FAQ Toggle Function
+        function toggleFAQ(num) {
+            const content = document.getElementById(`faq-content-${num}`);
+            const icon = document.getElementById(`faq-icon-${num}`);
+
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+    </script>
+    <!-- Phase 4: Footer, Legal Popups, JavaScript & HTML Closure -->
+
+    <!-- Footer Section -->
+    <footer class="bg-slate-900 text-gray-400 py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Footer Content Grid -->
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="font-space font-bold text-2xl text-white">Trail</span>
+                        <span class="font-space font-bold text-2xl text-emerald-400">Vision</span>
+                    </div>
+                    <p class="text-sm mb-4">
+                        The most advanced wireless trail camera technology for serious hunters and wildlife enthusiasts.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-gray-400 hover:text-emerald-400 transition-colors">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-emerald-400 transition-colors">
+                            <i class="fab fa-youtube text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-emerald-400 transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#features" class="hover:text-emerald-400 transition-colors">Features</a></li>
+                        <li><a href="#gallery" class="hover:text-emerald-400 transition-colors">Gallery</a></li>
+                        <li><a href="#reviews" class="hover:text-emerald-400 transition-colors">Reviews</a></li>
+                        <li><a href="#packages" class="hover:text-emerald-400 transition-colors">Pricing</a></li>
+                        <li><a href="#faq" class="hover:text-emerald-400 transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Support</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li>
+                            <a href="#" onclick="openPopup('setup-guide'); return false;"
+                                class="hover:text-emerald-400 transition-colors">Setup Guide</a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="openPopup('warranty'); return false;"
+                                class="hover:text-emerald-400 transition-colors">Warranty</a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="openPopup('shipping'); return false;"
+                                class="hover:text-emerald-400 transition-colors">Shipping Info</a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="openPopup('returns'); return false;"
+                                class="hover:text-emerald-400 transition-colors">Returns</a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="openPopup('contact'); return false;"
+                                class="hover:text-emerald-400 transition-colors">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Stay Updated</h4>
+                    <p class="text-sm mb-4">Get hunting tips and exclusive offers delivered to your inbox.</p>
+                    <div class="flex gap-2 lg:flex md:hidden">
+                        <input type="email" placeholder="Your email"
+                            class="flex-1 bg-slate-800 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <button
+                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="border-t border-slate-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p class="text-sm text-center md:text-left">© 2024 TrailVision Pro. All rights reserved.</p>
+                    <div class="flex flex-wrap justify-center gap-6 text-sm">
+                        <a href="#" onclick="openPopup('privacy'); return false;"
+                            class="hover:text-emerald-400 transition-colors">Privacy Policy</a>
+                        <a href="#" onclick="openPopup('terms'); return false;"
+                            class="hover:text-emerald-400 transition-colors">Terms of Service</a>
+                        <a href="#" onclick="openPopup('about'); return false;"
+                            class="hover:text-emerald-400 transition-colors">About Us</a>
+                        <a href="#" onclick="openPopup('disclaimer'); return false;"
+                            class="hover:text-emerald-400 transition-colors">Disclaimer</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="flex justify-center gap-4 mt-8 opacity-50">
+                <i class="fab fa-cc-visa text-3xl"></i>
+                <i class="fab fa-cc-mastercard text-3xl"></i>
+                <i class="fab fa-cc-amex text-3xl"></i>
+                <i class="fab fa-cc-paypal text-3xl"></i>
+                <i class="fas fa-lock text-3xl"></i>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Legal Popups (Pre-embedded in HTML) -->
+
+    <!-- Privacy Policy Popup -->
+    <div id="privacy-popup" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[300] items-center justify-center p-4"
+        style="display: none;">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="font-semibold text-xl text-slate-900">Privacy Policy</h3>
+                <button onclick="closePopup('privacy')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 prose prose-slate max-w-none">
+                <p class="text-gray-600">Last updated: January 2024</p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Information We Collect</h4>
+                <p class="text-slate-600">
+                    We collect information you provide directly to us, such as when you create an account, make a
+                    purchase, or
+                    contact us for support.
+                </p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">How We Use Your Information</h4>
+                <p class="text-slate-600">
+                    We use the information we collect to provide, maintain, and improve our services, process
+                    transactions, and
+                    communicate with you.
+                </p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Information Sharing</h4>
+                <p class="text-slate-600">
+                    We do not sell, trade, or otherwise transfer your personal information to third parties without your
+                    consent, except as described in this policy.
+                </p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Data Security</h4>
+                <p class="text-slate-600">
+                    We implement appropriate technical and organizational measures to protect your personal information
+                    against
+                    unauthorized access, alteration, disclosure, or destruction.
+                </p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Contact Us</h4>
+                <p class="text-slate-600">
+                    If you have any questions about this Privacy Policy, please contact our customer support team.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service Popup -->
+    <div id="terms-popup" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[300] items-center justify-center p-4"
+        style="display: none;">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="font-semibold text-xl text-slate-900">Terms of Service</h3>
+                <button onclick="closePopup('terms')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 prose prose-slate max-w-none">
+                <p class="text-gray-600">Effective Date: January 2024</p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Acceptance of Terms</h4>
+                <p class="text-slate-600">
+                    By accessing and using this website, you accept and agree to be bound by the terms and provision of
+                    this
+                    agreement.
+                </p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Use License</h4>
+                <p class="text-slate-600">
+                    Permission is granted to temporarily download one copy of the materials for personal, non-commercial
+                    transitory viewing only.
+                </p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Product Warranties</h4>
+                <p class="text-slate-600">
+                    TrailVision Pro X50 comes with a 1-year manufacturer warranty covering defects in materials and
+                    workmanship
+                    under normal use.
+                </p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Limitations</h4>
+                <p class="text-slate-600">
+                    In no event shall TrailVision or its suppliers be liable for any damages arising out of the use or
+                    inability
+                    to use the materials on this website.
+                </p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Governing Law</h4>
+                <p class="text-slate-600">
+                    These terms and conditions are governed by and construed in accordance with the laws of the United
+                    States.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Us Popup -->
+    <div id="about-popup" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[300] items-center justify-center p-4"
+        style="display: none;">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="font-semibold text-xl text-slate-900">About Us</h3>
+                <button onclick="closePopup('about')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 prose prose-slate max-w-none">
+                <h4 class="font-semibold text-slate-900 mt-6">Our Story</h4>
+                <p class="text-slate-600">
+                    TrailVision was founded by a team of passionate hunters and technology enthusiasts who saw the need
+                    for
+                    better wildlife monitoring solutions.
+                </p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Editorial Team</h4>
+                <p class="text-slate-600">
+                    Our editorial team consists of experienced hunters, wildlife biologists, and outdoor technology
+                    experts
+                    dedicated to providing the best trail camera solutions.
+                </p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Our Mission</h4>
+                <p class="text-slate-600">
+                    To revolutionize wildlife monitoring with cutting-edge technology that gives hunters and researchers
+                    real-time intelligence from the field.
+                </p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Quality Commitment</h4>
+                <p class="text-slate-600">
+                    Every TrailVision product undergoes rigorous testing in real-world conditions to ensure reliability
+                    and
+                    performance in any environment.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disclaimer Popup -->
+    <div id="disclaimer-popup"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[300] items-center justify-center p-4"
+        style="display: none;">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="font-semibold text-xl text-slate-900">Disclaimer</h3>
+                <button onclick="closePopup('disclaimer')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 prose prose-slate max-w-none">
+                <h4 class="font-semibold text-slate-900 mt-6">Product Results</h4>
+                <p class="text-slate-600">
+                    Individual results may vary. Wildlife behavior and photo quality depend on various factors including
+                    placement, settings, and environmental conditions.
+                </p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Hunting Regulations</h4>
+                <p class="text-slate-600">
+                    Users are responsible for complying with all local, state, and federal hunting laws and regulations.
+                    Check
+                    your local laws before use.
+                </p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Technical Specifications</h4>
+                <p class="text-slate-600">
+                    Product specifications are subject to change without notice. We strive to provide accurate
+                    information but
+                    cannot guarantee all details.
+                </p>
+
+                <h4 class="font-semibold text-slate-900 mt-6">Cellular Coverage</h4>
+                <p class="text-slate-600">
+                    4G LTE functionality requires adequate cellular coverage. Performance may vary based on network
+                    availability
+                    and signal strength in your area.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Support Popups -->
+
+    <!-- Setup Guide Popup -->
+    <div id="setup-guide-popup"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[300] items-center justify-center p-4"
+        style="display: none;">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="font-semibold text-xl text-slate-900">Quick Setup Guide</h3>
+                <button onclick="closePopup('setup-guide')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <ol class="space-y-4">
+                    <li class="flex gap-3">
+                        <span class="font-bold text-emerald-600">1.</span>
+                        <div>
+                            <p class="font-semibold text-slate-900">Insert Batteries</p>
+                            <p class="text-slate-600">Install 8 AA batteries or connect the solar panel accessory.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="font-bold text-emerald-600">2.</span>
+                        <div>
+                            <p class="font-semibold text-slate-900">Download App</p>
+                            <p class="text-slate-600">Get the free TrailVision app from App Store or Google Play.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="font-bold text-emerald-600">3.</span>
+                        <div>
+                            <p class="font-semibold text-slate-900">Scan QR Code</p>
+                            <p class="text-slate-600">Use the app to scan the QR code on your camera.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="font-bold text-emerald-600">4.</span>
+                        <div>
+                            <p class="font-semibold text-slate-900">Mount Camera</p>
+                            <p class="text-slate-600">Secure camera 3-4 feet high facing north when possible.</p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Other Support Popups (Warranty, Shipping, Returns, Contact) -->
+    <div id="warranty-popup" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[300] items-center justify-center p-4"
+        style="display: none;">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="font-semibold text-xl text-slate-900">Warranty Information</h3>
+                <button onclick="closePopup('warranty')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <p class="text-slate-600">TrailVision Pro X50 comes with comprehensive warranty coverage:</p>
+                <ul class="mt-4 space-y-2 text-slate-600">
+                    <li>• 1-year manufacturer warranty on all parts</li>
+                    <li>• 90-day money-back guarantee</li>
+                    <li>• Lifetime technical support</li>
+                    <li>• Free firmware updates</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Consolidated JavaScript -->
+    <script>
+        // Prevent page jump on popup open
+        let scrollPosition = 0;
+
+        // Legal Popup Functions
+        function openPopup(popupType) {
+            // Save current scroll position
+            scrollPosition = window.pageYOffset;
+
+            const popup = document.getElementById(popupType + '-popup');
+            if (popup) {
+                popup.style.display = 'flex';
+                // Prevent body scroll
+                document.body.style.position = 'fixed';
+                document.body.style.top = `-${scrollPosition}px`;
+                document.body.style.width = '100%';
+            }
+        }
+
+        function closePopup(popupType) {
+            const popup = document.getElementById(popupType + '-popup');
+            if (popup) {
+                popup.style.display = 'none';
+                // Restore body scroll
+                document.body.style.position = '';
+                document.body.style.top = '';
+                document.body.style.width = '';
+                // Restore scroll position
+                window.scrollTo(0, scrollPosition);
+            }
+        }
+
+        // Close popup on background click
+        document.querySelectorAll('[id$="-popup"]').forEach((popup) => {
+            popup.addEventListener('click', function (e) {
+                if (e.target === this) {
+                    const popupType = this.id.replace('-popup', '');
+                    closePopup(popupType);
+                }
+            });
+        });
+
+        // Smooth scroll for all anchor links
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId && targetId !== '#') {
+                        const target = document.querySelector(targetId);
+                        if (target) {
+                            const headerOffset = 80;
+                            const elementPosition = target.getBoundingClientRect().top;
+                            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                            window.scrollTo({
+                                top: offsetPosition,
+                                behavior: 'smooth',
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+        // Newsletter form submission
+        document.querySelector('footer input[type="email"]').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const email = this.value;
+                if (email && email.includes('@')) {
+                    alert('Thank you for subscribing! Check your email for confirmation.');
+                    this.value = '';
+                }
+            }
+        });
+
+        document.querySelector('footer button').addEventListener('click', function (e) {
+            const emailInput = this.previousElementSibling;
+            const email = emailInput.value;
+            if (email && email.includes('@')) {
+                alert('Thank you for subscribing! Check your email for confirmation.');
+                emailInput.value = '';
+            }
+        });
+
+        // Initialize any remaining functionality
+        console.log('TrailVision Pro X50 Landing Page Loaded Successfully');
+    </script>
+
+    <!-- Initialize Shopify Inline Editor -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Define editable elements for the hero section
+            const editableElements = [
+                {
+                    id: 'hero-title',
+                    selector: '.hero-headline span',
+                    metafield: 'hero_title'
+                },
+                {
+                    id: 'hero-subtitle',
+                    selector: '.hero-subheadline span',
+                    metafield: 'hero_subtitle'
+                },
+                {
+                    id: 'logo-text-start',
+                    selector: '.font-space.font-bold.text-2xl.sm\\:text-3xl.text-slate-900',
+                    metafield: 'logo_text_start'
+                },
+                {
+                    id: 'logo-text-end',
+                    selector: '.font-space.font-bold.text-2xl.sm\\:text-3xl.gradient-text',
+                    metafield: 'logo_text_end'
+                },
+                {
+                    id: 'top-bar-text',
+                    selector: '.bg-gradient-to-r.from-slate-900 .font-medium',
+                    metafield: 'top_bar_text'
+                },
+                {
+                    id: 'nav-item-1',
+                    selector: 'a[href="#technology"]',
+                    metafield: 'nav_item_1'
+                },
+                {
+                    id: 'nav-item-2',
+                    selector: 'a[href="#features"]',
+                    metafield: 'nav_item_2'
+                },
+                {
+                    id: 'nav-item-3',
+                    selector: 'a[href="#gallery"]',
+                    metafield: 'nav_item_3'
+                },
+                {
+                    id: 'nav-item-4',
+                    selector: 'a[href="#reviews"]',
+                    metafield: 'nav_item_4'
+                }
+            ];
+            
+            // Initialize the editor with our elements
+            ShopifyInlineEditor.init(editableElements);
+        });
+    </script>
+
+    <!-- Close body and html tags -->
+</body>
+
+</html>
