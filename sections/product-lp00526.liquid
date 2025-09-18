@@ -244,18 +244,33 @@
         }
     </style>
     <script>
-  window.ProductMetaFields = {
-    id: {{ product.id | json }},
-    handle: {{ product.handle | json }},
-    title: {{ product.title | json }},
-    metafields: {
-      {% for metafield in product.metafields %}
-        "{{ metafield.namespace }}.{{ metafield.key }}": {{ metafield.value | json }}{% unless forloop.last %},{% endunless %}
-      {% else %}
-        // No metafields available
-      {% endfor %}
-    }
-  };
+  window.productData = {
+        id: '{{ product.id }}',
+        title: '{{ product.title | escape }}',
+        handle: '{{ product.handle }}',
+        price: {{ product.price }},
+        compare_at_price: {% if product.compare_at_price %}{{ product.compare_at_price }}{% else %}''{% endif %},
+        available: {{ product.available }},
+        image: "{{ product.featured_image | image_url: width: 100 }}",
+        variants: [
+          {% for variant in product.variants %}
+          {
+            id: {{ variant.id }},
+            title: "{{ variant.title | escape }}",
+            price: {{ variant.price }},
+            available: {{ variant.available }},
+            quantity: {{ variant.inventory_quantity }},
+            image: {% if variant.image %}"{{ variant.image | image_url: width: 100 }}"{% else %}""{% endif %}
+          }{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        ],
+        options: {{ product.options_with_values | json }},
+        selected_or_first_available_variant: {{ product.selected_or_first_available_variant | json }},
+        featuredImage: {
+          url: '{{ product.featured_image | image_url: width: 1000 }}'
+        },
+        collections: {{ product.collections | json }}
+      };
 </script>
 </head>
 
@@ -276,7 +291,7 @@
                 <div class="flex items-center justify-center gap-3 text-sm sm:text-base">
                     <span class="flex items-center gap-2">
                         <i class="fas fa-tag text-emerald-400"></i>
-                        <span class="font-medium">{{ product.metafields.custom.top_bar_text | default: 'FLASH SALE: Save
+                        <span class="font-medium" data-id="top-bar-text">{{ product.metafields.custom.top_bar_text | default: 'FLASH SALE: Save
                             $169 + Free Shipping' }}</span>
                     </span>
                     <span class="hidden sm:flex items-center gap-2 text-emerald-400">
@@ -294,30 +309,31 @@
                 <!-- Logo -->
                 <div class="flex items-center gap-3">
                     <div class="flex items-center">
-                        <span class="font-space font-bold text-2xl sm:text-3xl text-slate-900">{{
+                        <span class="font-space font-bold text-2xl sm:text-3xl text-slate-900" data-meta="logo_text_start">{{
                             product.metafields.custom.logo_text_start | default: 'Trail' }}</span>
-                        <span class="font-space font-bold text-2xl sm:text-3xl gradient-text">{{
+                        <span class="font-space font-bold text-2xl sm:text-3xl gradient-text" data-meta="logo_text_end">{{
                             product.metafields.custom.logo_text_end | default: 'Vision' }}</span>
                     </div>
-                    <span class="inline-block bg-emerald-500 text-white text-xs font-bold px-2.5 py-1 rounded">{{
+                    <span class="inline-block bg-emerald-500 text-white text-xs font-bold px-2.5 py-1 rounded" data-meta="product_version">{{
                         product.metafields.custom.product_version | default: 'PRO X50' }}</span>
                 </div>
 
                 <!-- Desktop Nav -->
                 <div class="hidden lg:flex items-center gap-8">
-                    <a href="#technology" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">
+                    <a href="#technology" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors" data-meta="nav_item_1">
                         {{ product.metafields.custom.nav_item_1 | default: 'Technology' }}
                     </a>
-                    <a href="#features" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">
+                    <a href="#features" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors" data-meta="nav_item_2">
                         {{ product.metafields.custom.nav_item_2 | default: 'Features' }}
                     </a>
-                    <a href="#gallery" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">
+                    <a href="#gallery" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors" data-meta="nav_item_3">
                         {{ product.metafields.custom.nav_item_3 | default: 'Gallery' }}
                     </a>
-                    <a href="#reviews" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors">
+                    <a href="#reviews" class="text-slate-600 hover:text-emerald-600 font-medium transition-colors" data-meta="nav_item_4">
                         {{ product.metafields.custom.nav_item_4 | default: 'Reviews' }}
                     </a>
                     <a href="#packages"
+                        data-meta="nav_cta_text"
                         class="bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold px-6 py-2.5 rounded-full hover:shadow-lg transition-all transform hover:scale-105">
                         {{ product.metafields.custom.nav_cta_text | default: 'Get 50% OFF' }}
                     </a>
@@ -370,7 +386,7 @@
                                 <span class="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
                                 <span class="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
                             </div>
-                            <span class="text-sm font-medium text-slate-700">{{
+                            <span class="text-sm font-medium text-slate-700" data-meta="active_users_count">{{
                                 product.metafields.custom.active_users_count | default: '2,847' }} Active Users</span>
                         </div>
                     </div>
@@ -378,12 +394,14 @@
 
                 <!-- 2. Headline -->
                 <h1
+                    data-meta="hero_title"
                     class="hero-headline font-space font-bold text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-slate-900 leading-[1.1] animate-fadeInUp">
                     <span>{{ product.metafields.custom.hero_title | default: 'Revolutionary TrailVision Pro X50' }}</span>
                 </h1>
 
                 <!-- 3. Subheadline -->
                 <p
+                    data-meta="hero_subtitle"
                     class="hero-subheadline text-lg sm:text-xl lg:text-2xl text-slate-600 leading-relaxed animate-fadeInUp">
                     <span>{{ product.metafields.custom.hero_subtitle | default: 'Revolutionary 4G LTE technology delivers HD
                     photos in 30 seconds. No WiFi needed. No SD cards. Just real-time wildlife intelligence.' }}</span>
@@ -393,9 +411,21 @@
                 <div class="hero-image animate-fadeInUp">
                     <div class="relative rounded-2xl overflow-hidden shadow-2xl">
                         <img 
+                            data-meta="hero_image"
+                            data-type="image"
+                            id="hero-image"
                             src="{{ product.metafields.custom.hero_image | img_url: 'master' }}"
                             alt="{{ product.metafields.custom.hero_image_alt | default: product.title }}"
                             class="w-full h-auto object-cover">
+                            
+                        <!-- Edit button (hidden by default, shown by JS when in admin mode) -->
+                        <button 
+                            id="hero-image-edit-btn" 
+                            class="absolute top-4 right-4 bg-blue-500 text-white rounded-full w-10 h-10 hidden items-center justify-center shadow-lg z-20"
+                            data-image-id="hero-image"
+                            data-metafield="hero_image">
+                            <i class="fas fa-camera"></i>
+                        </button>
 
                         <!-- Floating Badges -->
                         <div
@@ -417,10 +447,10 @@
                                         class="fas fa-{{ product.metafields.custom.hero_callout_icon | default: 'signal' }} text-emerald-600 text-lg"></i>
                                 </div>
                                 <div>
-                                    <p class="font-semibold text-slate-900 text-sm sm:text-base">{{
+                                    <p class="font-semibold text-slate-900 text-sm sm:text-base" data-meta="hero_callout_title">{{
                                         product.metafields.custom.hero_callout_title | default: '4G LTE Connected' }}
                                     </p>
-                                    <p class="text-xs sm:text-sm text-slate-600">{{
+                                    <p class="text-xs sm:text-sm text-slate-600" data-meta="hero_callout_subtitle">{{
                                         product.metafields.custom.hero_callout_subtitle | default: 'Works everywhere' }}
                                     </p>
                                 </div>
@@ -434,33 +464,41 @@
                     <div class="flex flex-col items-center text-center space-y-2">
                         <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
                             <i
+                                data-meta="feature_1_icon"
+                                data-type="icon"
                                 class="fas fa-{{ product.metafields.custom.feature_1_icon | default: 'wifi' }} text-emerald-600 text-lg"></i>
                         </div>
-                        <span class="text-sm font-medium text-slate-700">{{ product.metafields.custom.feature_1_text |
+                        <span class="text-sm font-medium text-slate-700" data-meta="feature_1_text">{{ product.metafields.custom.feature_1_text |
                             default: 'No WiFi' }}</span>
                     </div>
                     <div class="flex flex-col items-center text-center space-y-2">
                         <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
                             <i
+                                data-meta="feature_2_icon"
+                                data-type="icon"
                                 class="fas fa-{{ product.metafields.custom.feature_2_icon | default: 'bolt' }} text-emerald-600 text-lg"></i>
                         </div>
-                        <span class="text-sm font-medium text-slate-700">{{ product.metafields.custom.feature_2_text |
+                        <span class="text-sm font-medium text-slate-700" data-meta="feature_2_text">{{ product.metafields.custom.feature_2_text |
                             default: '30 Sec' }}</span>
                     </div>
                     <div class="flex flex-col items-center text-center space-y-2">
                         <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
                             <i
+                                data-meta="feature_3_icon"
+                                data-type="icon"
                                 class="fas fa-{{ product.metafields.custom.feature_3_icon | default: 'moon' }} text-emerald-600 text-lg"></i>
                         </div>
-                        <span class="text-sm font-medium text-slate-700">{{ product.metafields.custom.feature_3_text |
+                        <span class="text-sm font-medium text-slate-700" data-meta="feature_3_text">{{ product.metafields.custom.feature_3_text |
                             default: 'Night Vision' }}</span>
                     </div>
                     <div class="flex flex-col items-center text-center space-y-2">
                         <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
                             <i
+                                data-meta="feature_4_icon"
+                                data-type="icon"
                                 class="fas fa-{{ product.metafields.custom.feature_4_icon | default: 'video' }} text-emerald-600 text-lg"></i>
                         </div>
-                        <span class="text-sm font-medium text-slate-700">{{ product.metafields.custom.feature_4_text |
+                        <span class="text-sm font-medium text-slate-700" data-meta="feature_4_text">{{ product.metafields.custom.feature_4_text |
                             default: '4K Video' }}</span>
                     </div>
                 </div>
@@ -560,9 +598,9 @@
                                 class="fas fa-{{ product.metafields.custom.tech_feature_1_icon | default: 'satellite-dish' }} text-white text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-xl text-slate-900 mb-2">{{
+                            <h3 class="font-semibold text-xl text-slate-900 mb-2" data-id="tech_feature_1_title">{{
                                 product.metafields.custom.tech_feature_1_title | default: '4G LTE Connectivity' }}</h3>
-                            <p class="text-slate-600 leading-relaxed">
+                            <p class="text-slate-600 leading-relaxed" data-id="tech_feature_1_description">
                                 {{ product.metafields.custom.tech_feature_1_description | default: 'Built-in cellular
                                 modem works with AT&T, Verizon & T-Mobile. No WiFi or bluetooth needed.' }}
                             </p>
@@ -579,10 +617,10 @@
                                 class="fas fa-{{ product.metafields.custom.tech_feature_2_icon | default: 'brain' }} text-white text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-xl text-slate-900 mb-2">{{
+                            <h3 class="font-semibold text-xl text-slate-900 mb-2" data-id="tech_feature_2_title">{{
                                 product.metafields.custom.tech_feature_2_title | default: 'AI Wildlife Detection' }}
                             </h3>
-                            <p class="text-slate-600 leading-relaxed">
+                            <p class="text-slate-600 leading-relaxed" data-id="tech_feature_2_description">
                                 {{ product.metafields.custom.tech_feature_2_description | default: 'Smart AI identifies
                                 animals and filters out false triggers from wind or branches.' }}
                             </p>
@@ -1029,6 +1067,60 @@
     </script>
     <!-- Phase 2: Product Gallery, How It Works, Performance Features -->
 
+    <!-- Image Upload Modal -->
+    <div id="image-upload-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[300] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xl w-full relative premium-shadow">
+            <button id="image-modal-close" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            
+            <div class="p-6">
+                <h3 class="font-space font-bold text-2xl text-slate-900 mb-4">Update Image</h3>
+                
+                <div class="space-y-4">
+                    <!-- Current Image -->
+                    <div>
+                        <p class="text-sm text-slate-600 mb-2">Current Image:</p>
+                        <div id="current-image-container" class="relative border border-slate-200 rounded-lg overflow-hidden h-40 bg-slate-100">
+                            <img id="current-image" src="" alt="Current image" class="w-full h-full object-contain">
+                        </div>
+                    </div>
+                    
+                    <!-- Upload New Image -->
+                    <div>
+                        <p class="text-sm text-slate-600 mb-2">Upload New Image:</p>
+                        <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center">
+                            <input type="file" id="image-upload" class="hidden" accept="image/*">
+                            <label for="image-upload" class="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-lg inline-block mb-3 hover:bg-blue-600 transition-colors">
+                                <i class="fas fa-upload mr-2"></i>Choose Image
+                            </label>
+                            <p id="file-name" class="text-sm text-slate-500">No file selected</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Image Preview -->
+                    <div>
+                        <p class="text-sm text-slate-600 mb-2">Preview:</p>
+                        <div id="image-preview-container" class="relative border border-slate-200 rounded-lg overflow-hidden h-40 bg-slate-100 flex items-center justify-center">
+                            <p id="no-preview" class="text-slate-400">Preview will appear here</p>
+                            <img id="image-preview" src="" alt="Image preview" class="w-full h-full object-contain hidden">
+                        </div>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="flex gap-3 pt-2">
+                        <button id="upload-image-btn" class="bg-emerald-500 text-white px-6 py-2 rounded-lg flex-1 font-medium hover:bg-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i class="fas fa-save mr-2"></i>Save Changes
+                        </button>
+                        <button id="cancel-upload-btn" class="bg-slate-200 text-slate-700 px-6 py-2 rounded-lg flex-1 font-medium hover:bg-slate-300 transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         /* Font styles */
         .font-space {
@@ -1093,6 +1185,30 @@
         .touch-manipulation {
             touch-action: manipulation;
         }
+        
+        /* Gallery edit buttons */
+        .gallery-edit-button {
+            transition: all 0.2s ease;
+        }
+        
+        .gallery-edit-button:hover {
+            transform: scale(1.1);
+            background-color: #3b82f6; /* blue-500 */
+        }
+        
+        /* Gallery modal animations */
+        #gallery-modal {
+            transition: opacity 0.3s ease;
+        }
+        
+        #gallery-modal.flex {
+            opacity: 1;
+        }
+        
+        #gallery-modal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 
     <!-- Product Gallery Section -->
@@ -1139,11 +1255,20 @@
   {% assign image_alt = product.metafields.custom[gallery_alt_key] | default: product.title | append: ' - Image ' | append: i %}
   {% assign highlight_icon = product.metafields.custom[highlight_icon_key] | default: 'microchip' %}
 
-  <div class="gallery-slide absolute inset-0" data-slide="{{ i }}"
+  <div class="gallery-slide absolute inset-0" data-slide="{{ i }}" data-index="{{ i }}"
        style="display: {% if i == 1 %}block{% else %}none{% endif %};">
-    <img src="{% if gallery_image %}{{ gallery_image | img_url: 'master' }}{% else %}{{ product.featured_image | img_url: 'master' }}{% endif %}"
+    <img id="gallery-image-{{ i }}"
+         src="{% if gallery_image %}{{ gallery_image | img_url: 'master' }}{% else %}{{ product.featured_image | img_url: 'master' }}{% endif %}"
          alt="{{ image_alt }}"
          class="w-full h-full object-cover">
+    
+    <!-- Edit button (hidden by default, shown by JS when in admin mode) -->
+    <button class="gallery-edit-button absolute top-4 right-4 bg-blue-500 text-white rounded-full w-10 h-10 hidden items-center justify-center shadow-lg z-20" 
+            data-gallery-index="{{ i }}"
+            data-image-id="gallery-image-{{ i }}"
+            data-metafield="{{ gallery_image_key }}">
+            <i class="fas fa-camera"></i>
+    </button>
   </div>
 {% endfor %}
 
@@ -1731,6 +1856,7 @@
                 changeSlide(-1);
             }
         }
+        
     </script>
     <!-- Phase 3: Customer Reviews, Package Selection, Guarantee, Final CTA -->
 
@@ -2083,34 +2209,16 @@
             <!-- Product Review Images Grid (6 images) -->
             <div class="mb-16">
                 <h3 class="text-center text-2xl font-bold text-slate-900 mb-8">Customer Wildlife Captures</h3>
-                <div class="review-images-grid">
-                    <div class="relative rounded-xl overflow-hidden shadow-lg">
-                        <img src="https://images.unsplash.com/photo-1484406566174-9da000fda645?w=400&h=400&fit=crop"
-                            alt="Customer wildlife photo 1" class="w-full h-full object-cover aspect-square">
-                    </div>
-                    <div class="relative rounded-xl overflow-hidden shadow-lg">
-                        <img src="https://images.unsplash.com/photo-1549366021-9f761d450615?w=400&h=400&fit=crop"
-                            alt="Customer wildlife photo 2" class="w-full h-full object-cover aspect-square">
-                    </div>
-                    <div class="relative rounded-xl overflow-hidden shadow-lg">
-                        <img src="https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=400&h=400&fit=crop"
-                            alt="Customer wildlife photo 3" class="w-full h-full object-cover aspect-square">
-                    </div>
-                    <div class="relative rounded-xl overflow-hidden shadow-lg">
-                        <img src="https://images.unsplash.com/photo-1542856204-00101eb6def4?w=400&h=400&fit=crop"
-                            alt="Customer wildlife photo 4" class="w-full h-full object-cover aspect-square">
-                    </div>
-                    <div class="relative rounded-xl overflow-hidden shadow-lg">
-                        <img src="https://images.unsplash.com/photo-1516571748831-5d81767b788d?w=400&h=400&fit=crop"
-                            alt="Customer wildlife photo 5" class="w-full h-full object-cover aspect-square">
-                    </div>
-                    <div class="relative rounded-xl overflow-hidden shadow-lg">
-                        <img src="https://images.unsplash.com/photo-1534759846116-5799c33ce22a?w=400&h=400&fit=crop"
-                            alt="Customer wildlife photo 6" class="w-full h-full object-cover aspect-square">
-                    </div>
+                <div class="review-images-grid" data-meta="gallery_product_reviews" data-type="gallery">
+                    {% for image in product.metafields.custom.gallery_product_review.value %}
+                        <div class="relative rounded-xl overflow-hidden shadow-lg">
+                            <img src="/cdn/shop/{{ image | imgae }}"
+                                loading="lazy"
+                                alt="Customer wildlife photo 1" class="w-full h-full object-cover aspect-square">
+                                </div>
+                        {% endfor %}
                 </div>
             </div>
-
             <!-- Text Reviews -->
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Review 1 -->
@@ -3434,64 +3542,7 @@
         console.log('TrailVision Pro X50 Landing Page Loaded Successfully');
     </script>
 
-    <!-- Initialize Shopify Inline Editor -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Define editable elements for the hero section
-            const editableElements = [
-                {
-                    id: 'hero-title',
-                    selector: '.hero-headline span',
-                    metafield: 'hero_title'
-                },
-                {
-                    id: 'hero-subtitle',
-                    selector: '.hero-subheadline span',
-                    metafield: 'hero_subtitle'
-                },
-                {
-                    id: 'logo-text-start',
-                    selector: '.font-space.font-bold.text-2xl.sm\\:text-3xl.text-slate-900',
-                    metafield: 'logo_text_start'
-                },
-                {
-                    id: 'logo-text-end',
-                    selector: '.font-space.font-bold.text-2xl.sm\\:text-3xl.gradient-text',
-                    metafield: 'logo_text_end'
-                },
-                {
-                    id: 'top-bar-text',
-                    selector: '.bg-gradient-to-r.from-slate-900 .font-medium',
-                    metafield: 'top_bar_text'
-                },
-                {
-                    id: 'nav-item-1',
-                    selector: 'a[href="#technology"]',
-                    metafield: 'nav_item_1'
-                },
-                {
-                    id: 'nav-item-2',
-                    selector: 'a[href="#features"]',
-                    metafield: 'nav_item_2'
-                },
-                {
-                    id: 'nav-item-3',
-                    selector: 'a[href="#gallery"]',
-                    metafield: 'nav_item_3'
-                },
-                {
-                    id: 'nav-item-4',
-                    selector: 'a[href="#reviews"]',
-                    metafield: 'nav_item_4'
-                }
-            ];
-            
-            // Initialize the editor with our elements
-            ShopifyInlineEditor.init(editableElements);
-        });
-    </script>
 
-    <!-- Close body and html tags -->
 </body>
 
 </html>
