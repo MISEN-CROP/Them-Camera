@@ -2210,13 +2210,26 @@
             <div class="mb-16">
                 <h3 class="text-center text-2xl font-bold text-slate-900 mb-8">Customer Wildlife Captures</h3>
                 <div class="review-images-grid" data-meta="gallery_product_reviews" data-type="gallery">
-                    {% for image in product.metafields.custom.gallery_product_review.value %}
+                        {% assign reviews = product.metafields.custom.gallery_product_reviews | parse_json %}
+
+                        {% for image in reviews %}
+                            <div class="relative rounded-xl overflow-hidden shadow-lg">
+                                <img src="{{ image }}" 
+                                    loading="lazy" 
+                                    alt="Customer wildlife photo {{ forloop.index }}" 
+                                    class="w-full h-full object-cover aspect-square">
+                            </div>
+                        {% endfor %}
+
+                    {% comment %} {{product.metafields.custom.gallery_product_reviews}}
+                    {% for image in product.metafields.custom.gallery_product_reviews.value %}
+                        {{imgae}}
                         <div class="relative rounded-xl overflow-hidden shadow-lg">
                             <img src="/cdn/shop/{{ image | imgae }}"
                                 loading="lazy"
                                 alt="Customer wildlife photo 1" class="w-full h-full object-cover aspect-square">
                                 </div>
-                        {% endfor %}
+                        {% endfor %} {% endcomment %}
                 </div>
             </div>
             <!-- Text Reviews -->
