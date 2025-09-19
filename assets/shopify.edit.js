@@ -286,7 +286,10 @@ function openGalleryModal(metaKey) {
                     btnSaveChange.style.display = "none";
                 }
                 const elContainer = document.querySelector(`[data-meta="${metaKey}"]`);
-                const elImage = document.querySelector(`[data-meta="${metaKey}"] img`);
+                let elImage = document.querySelector(`[data-meta="${metaKey}"] img`);
+                if (!elImage) {
+                    elImage = document.createElement("img");
+                }
                 const className = elImage.getAttribute("class") || "";
                 elContainer.innerHTML = "";
                 images.forEach((file) => {

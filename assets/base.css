@@ -18,6 +18,7 @@ body {
 .editMode {
     min-width : 10px;
     min-height: 10px;
+    border    : 1px dotted red;
 }
 
 .btn-save-changes {
