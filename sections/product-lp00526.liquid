@@ -17,10 +17,9 @@
 
     <!-- Tailwind CSS -->
     <script src="{{ product.metafields.custom.tailwind_url | default: 'https://cdn.tailwindcss.com' }}"></script>
-    
-    <!-- Shopify Inline Editor -->
-    {{ 'shopify-inline-editor.js' | asset_url | script_tag }}
 
+    <!-- Shopify Edit -->
+    
     <style>
         * {
             font-family: '{{ product.metafields.custom.primary_font | default: ' Manrope' }}',
@@ -2540,7 +2539,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 packages-container">
                 <!-- Package 1 - Starter -->
                 <div
-                    class="package-card bg-white rounded-3xl shadow-lg overflow-hidden border-2 border-slate-200 hover:border-emerald-300 hover:shadow-2xl">
+                    class="package-card root-product-render bg-white rounded-3xl shadow-lg overflow-hidden border-2 border-slate-200 hover:border-emerald-300 hover:shadow-2xl">
                     <div class="p-6 sm:p-8 lg:p-10">
                         <!-- Package Header -->
                         <div class="text-center mb-6">
@@ -2557,12 +2556,14 @@
                             </div>
                         </div>
 
+                        <div class="variant-select-wrapper"></div>
+
                         <!-- Pricing -->
                         <div class="text-center mb-8 space-y-2">
-                            <p class="text-slate-500 line-through text-xl">$338</p>
-                            <p class="text-5xl lg:text-6xl font-bold text-slate-900">$169</p>
-                            <div class="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full">
-                                <span class="font-bold text-base">Save $169 (50%)</span>
+                            <p class="text-slate-500 line-through text-xl price-original">$338</p>
+                            <p class="text-5xl lg:text-6xl font-bold text-slate-900 price-discount">$169</p>
+                            <div class="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full price-discount-text-wp">
+                                <span class="font-bold text-base price-discount-text">Save $169 (50%)</span>
                             </div>
                         </div>
 
@@ -2588,7 +2589,7 @@
 
                         <!-- CTA Button -->
                         <button
-                            class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-lg py-4 rounded-xl transition-all">
+                            class="w-full add-to-cart-button bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-lg py-4 rounded-xl transition-all">
                             Add to Cart
                         </button>
 
@@ -2599,7 +2600,7 @@
 
                 <!-- Package 2 - Most Popular -->
                 <div
-                    class="bg-white rounded-3xl shadow-2xl border-4 border-emerald-500 transform lg:scale-105 relative">
+                    class="bg-white root-product-render rounded-3xl shadow-2xl border-4 border-emerald-500 transform lg:scale-105 relative">
                     <!-- Most Popular Badge -->
                     <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 z-10">
                         <div
@@ -2631,13 +2632,15 @@
                             </div>
                         </div>
 
+                        <div class="variant-select-wrapper"></div>
+
                         <!-- Pricing -->
                         <div class="text-center mb-8 space-y-2">
-                            <p class="text-slate-500 line-through text-xl">$1,014</p>
-                            <p class="text-5xl lg:text-6xl font-bold text-emerald-600">$399</p>
+                            <p class="text-slate-500 line-through text-xl price-original">$1,014</p>
+                            <p class="text-5xl lg:text-6xl font-bold text-emerald-600 price-discount">$399</p>
                             <div
-                                class="inline-block bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded-full">
-                                <span class="font-bold text-base">Save $615 (61%)</span>
+                                class="inline-block bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded-full price-discount-text-wp">
+                                <span class="font-bold text-base price-discount-text">Save $615 (61%)</span>
                             </div>
                         </div>
 
@@ -2663,7 +2666,7 @@
 
                         <!-- CTA Button -->
                         <button
-                            class="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold text-lg py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+                            class="w-full add-to-cart-button bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold text-lg py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
                             Get Best Value Pack
                         </button>
 
@@ -2674,7 +2677,7 @@
 
                 <!-- Package 3 - Professional -->
                 <div
-                    class="package-card bg-white rounded-3xl shadow-lg overflow-hidden border-2 border-slate-200 hover:border-emerald-300 hover:shadow-2xl">
+                    class="package-card root-product-render bg-white rounded-3xl shadow-lg overflow-hidden border-2 border-slate-200 hover:border-emerald-300 hover:shadow-2xl">
                     <div class="p-6 sm:p-8 lg:p-10">
                         <!-- Package Header -->
                         <div class="text-center mb-6">
@@ -2691,12 +2694,14 @@
                             </div>
                         </div>
 
+                        <div class="variant-select-wrapper"></div>
+
                         <!-- Pricing -->
                         <div class="text-center mb-8 space-y-2">
-                            <p class="text-slate-500 line-through text-xl">$2,028</p>
-                            <p class="text-5xl lg:text-6xl font-bold text-slate-900">$699</p>
-                            <div class="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full">
-                                <span class="font-bold text-base">Save $1,329 (66%)</span>
+                            <p class="text-slate-500 line-through text-xl price-original">$2,028</p>
+                            <p class="text-5xl lg:text-6xl font-bold text-slate-900 price-discount">$699</p>
+                            <div class="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full price-discount-text-wp">
+                                <span class="font-bold text-base price-discount-text">Save $1,329 (66%)</span>
                             </div>
                         </div>
 
@@ -2722,7 +2727,7 @@
 
                         <!-- CTA Button -->
                         <button
-                            class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-lg py-4 rounded-xl transition-all">
+                            class="w-full add-to-cart-button bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-lg py-4 rounded-xl transition-all">
                             Add to Cart
                         </button>
 

@@ -3,7 +3,20 @@
         "main": {
             "type": "product-lp00526",
             "settings": {}
+        },
+        "17582659274c58b8d5": {
+            "type": "apps",
+            "blocks": {
+                "kaching_bundles_app_block_86GRpN": {
+                    "type": "shopify://apps/kaching-bundles/blocks/app-block/6c637362-a106-4a32-94ac-94dcfd68cdb8",
+                    "settings": {
+                        "product": "{{product}}"
+                    }
+                }
+            },
+            "block_order": ["kaching_bundles_app_block_86GRpN"],
+            "settings": {}
         }
     },
-    "order": ["main"]
+    "order": ["17582659274c58b8d5", "main"]
 }
