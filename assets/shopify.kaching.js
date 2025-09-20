@@ -13,6 +13,7 @@ setTimeout(() => {
         const configJson = JSON.parse(config);
         const dealBars = configJson.dealBars;
         if (!dealBars || dealBars.length === 0) return;
+        katChingBundlePar.style.display = "none";
         DealBars(dealBars);
     }
 }, 2000);
@@ -164,7 +165,7 @@ function VariantSelect({ imageRender, handleShowPrice, addToCartButton, dealBar 
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-Shopify-Storefront-Access-Token": "e1fe8d25cf44ba0a319ce2c63d6c7cf3"
+                    "X-Shopify-Storefront-Access-Token": "07e41e6b62b1dad042bc9872ebfbaca5"
                 },
                 body: JSON.stringify({
                     query: `mutation cartCreate($input: CartInput) {

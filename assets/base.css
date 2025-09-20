@@ -45,3 +45,7 @@ body {
     color           : #fff;
     font-weight     : 600;
 }
+
+.kaching-bundle{
+    display: none !important;
+}
